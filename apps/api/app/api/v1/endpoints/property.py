@@ -1192,7 +1192,22 @@ Inkluder 4-6 dokumenter og 5-8 sjekkliste-punkter. Vær KORT og konsis."""
             if text.startswith("json"):
                 text = text[4:]
             text = text.rsplit("```", 1)[0].strip()
-        result_json = json.loads(text)
+        # Håndter truncated JSON: prøv å parse, og fiks ved feil
+        try:
+            result_json = json.loads(text)
+        except json.JSONDecodeError:
+            # Prøv å lukke åpne strenger og brackets
+            fixed = text
+            if fixed.count('"') % 2 != 0:
+                fixed += '"'
+            while fixed.count('[') > fixed.count(']'):
+                fixed += ']'
+            while fixed.count('{') > fixed.count('}'):
+                fixed += '}'
+            try:
+                result_json = json.loads(fixed)
+            except json.JSONDecodeError:
+                result_json = {"soknadstype": "søknadspliktig", "soknadstype_begrunnelse": "AI-analyse ble avbrutt", "dokumenter": [], "sjekkliste": [], "advarsler": ["AI-analyse ble avbrutt – kontakt oss for komplett sjekkliste"]}
 
         return {
             "soknadstype": result_json.get("soknadstype", "søknadspliktig"),
