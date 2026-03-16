@@ -135,49 +135,136 @@ async def smakebit(
             resultat["eiendom"]["adresse"] = e.adresse if e else f"Gnr. {gnr}, Bnr. {bnr}"
             resultat["eiendom"]["kommunenavn"] = kr.kommune.kommunenavn if kr.kommune else knr
 
-            # Bygninger – vis type og byggeår, men SKJUL BRA
+            # Bygninger – vis ALT (generøs smakebit)
+            if kr.bygninger:
+                resultat["grunndata"]["bygninger"] = [
+                    {
+                        "bygningstype": b.bygningstype,
+                        "byggeaar": b.byggeaar,
+                        "bruksareal_m2": b.bruksareal,
+                        "bygningstatus": getattr(b, "bygningstatus", None),
+                    }
+                    for b in kr.bygninger[:5]
+                ]
+                resultat["grunndata"]["antall_bygninger"] = len(kr.bygninger)
+
+            # Byggesaker – vis FULLT (generøs – dette skaper tillit)
+            resultat["byggesaker"] = {
+                "antall_saker": len(kr.byggesaker) if kr.byggesaker else 0,
+                "saker": [
+                    {
+                        "tittel": getattr(s, "tittel", None) or getattr(s, "beskrivelse", None) or getattr(s, "sakstype", "Ukjent"),
+                        "status": getattr(s, "status", None),
+                        "vedtaksdato": getattr(s, "vedtaksdato", None),
+                        "sakstype": getattr(s, "sakstype", None),
+                    }
+                    for s in (kr.byggesaker or [])[:10]
+                ],
+            }
+
+            # ── AVVIKSDETEKSJON (gratis! dette er hook-en) ──────────
+            avvik_funnet = []
+            har_ferdigattest = False
+
+            for s in (kr.byggesaker or []):
+                st = (getattr(s, "status", "") or "").lower()
+                if "ferdigattest" in st:
+                    har_ferdigattest = True
+
+            # Sjekk 1: Manglende ferdigattest
+            saker_uten_fa = [
+                s for s in (kr.byggesaker or [])
+                if (getattr(s, "status", "") or "").lower() in ("igangsatt", "under arbeid", "godkjent", "rammetillatelse")
+            ]
+            if saker_uten_fa:
+                avvik_funnet.append({
+                    "type": "MANGLENDE_FERDIGATTEST",
+                    "alvorlighet": "HØY",
+                    "beskrivelse": f"{len(saker_uten_fa)} byggesak(er) uten ferdigattest registrert. Dette kan bety at tiltak ikke er ferdigmeldt.",
+                    "konsekvens": "Kan påvirke salgsverdi, forsikring og lovlighet. Kommunen kan kreve retting.",
+                    "nops_losning": "Vi hjelper deg med å innhente og ordne ferdigattest. Kontakt hey@nops.no.",
+                    "pris": "Fra 5 000 kr",
+                })
+
+            # Sjekk 2: Areal-avvik mellom bygninger og byggesaker
+            if kr.bygninger and kr.byggesaker:
+                registrert_bra = sum(b.bruksareal or 0 for b in kr.bygninger)
+                if registrert_bra > 0 and len(kr.byggesaker) == 0:
+                    avvik_funnet.append({
+                        "type": "INGEN_BYGGESAKER",
+                        "alvorlighet": "MIDDELS",
+                        "beskrivelse": f"Bygning på {registrert_bra} m² er registrert, men ingen byggesaker funnet. Kan tyde på uregistrerte endringer.",
+                        "konsekvens": "Mulig ulovlig oppført eller endret bygning.",
+                        "nops_losning": "Vi gjør en full avviksanalyse og hjelper med nødvendige søknader.",
+                        "pris": "Starter-plan 499 kr/mnd",
+                    })
+
+            # Sjekk 3: Gammel bygning uten nyere byggesaker
             if kr.bygninger:
                 b0 = kr.bygninger[0]
-                resultat["grunndata"]["bygningstype"] = b0.bygningstype
-                resultat["grunndata"]["byggeaar"] = b0.byggeaar
-                resultat["grunndata"]["antall_bygninger"] = len(kr.bygninger)
-                resultat["grunndata"]["bruksareal_hint"] = "Oppgrader for å se bruksareal"
+                if b0.byggeaar and b0.byggeaar < 1970 and len(kr.byggesaker or []) < 2:
+                    avvik_funnet.append({
+                        "type": "ELDRE_BOLIG_UTEN_DOKUMENTASJON",
+                        "alvorlighet": "LAV",
+                        "beskrivelse": f"Boligen er fra {b0.byggeaar} med lite byggesakshistorikk. Typisk for eldre boliger med mulige uregistrerte endringer.",
+                        "konsekvens": "Endringer gjort uten søknad kan være ulovlige. Viktig å avklare ved salg.",
+                        "nops_losning": "Vi innhenter godkjente tegninger fra kommunen (gratis) og gjør en komplett avvikssjekk.",
+                        "pris": "Gratis tegningshenting + Starter for full analyse",
+                    })
 
-            # Byggesaker – vis ANTALL, ikke detaljer
-            resultat["byggesaker_smakebit"] = {
-                "antall_saker": len(kr.byggesaker) if kr.byggesaker else 0,
-                "detaljer": "Oppgrader til Starter for å se byggesakshistorikk",
-                "har_ferdigattest": any(
-                    "ferdigattest" in (getattr(s, "status", "") or "").lower()
-                    for s in (kr.byggesaker or [])
+            resultat["avviksdeteksjon"] = {
+                "antall_avvik": len(avvik_funnet),
+                "avvik": avvik_funnet,
+                "har_ferdigattest": har_ferdigattest,
+                "vurdering": (
+                    "Ingen avvik funnet – eiendommen ser ryddig ut!"
+                    if not avvik_funnet else
+                    f"{len(avvik_funnet)} mulig(e) avvik funnet. Vi anbefaler en full gjennomgang."
                 ),
+                "nops_tilbud": {
+                    "beskrivelse": "nops.no kan løse dette for deg – vi innhenter tegninger, sjekker avvik og ordner søknader.",
+                    "kontakt": "hey@nops.no",
+                    "gratis": ["Innhenting av godkjente tegninger", "Ferdigattest-sjekk", "Grunnleggende avvikssjekk"],
+                    "betalt": ["Full AI-avviksanalyse", "Byggesøknad for retting", "Dispensasjonssøknad"],
+                },
             }
 
             # Ferdigattest
-            har_fa = resultat["byggesaker_smakebit"]["har_ferdigattest"]
-            resultat["ferdigattest_smakebit"] = {
-                "status": "Ferdigattest funnet" if har_fa else "Ingen ferdigattest registrert",
-                "cta": "Gratis sjekk og hjelp med ferdigattest" if not har_fa else None,
+            resultat["ferdigattest"] = {
+                "status": "Ferdigattest funnet" if har_ferdigattest else "Mangler ferdigattest",
+                "cta": "Vi hjelper deg med å ordne ferdigattest – kontakt hey@nops.no" if not har_ferdigattest else None,
                 "lenke": "/ferdigattest",
             }
 
-        # ── Reguleringsplan (SMAKEBIT – vis plannavn, skjul bestemmelser) ──
+        # ── Reguleringsplan (GENERØS – vis alt!) ────────────────
         ap = results.get("arealplaner")
         if ap:
             pr = getattr(ap, "planrapport", ap)
             if hasattr(pr, "gjeldende_planer") and pr.gjeldende_planer:
-                resultat["reguleringsplan_smakebit"] = {
+                resultat["reguleringsplan"] = {
                     "antall_planer": len(pr.gjeldende_planer),
-                    "plan_navn": pr.gjeldende_planer[0].plan_navn if pr.gjeldende_planer else None,
-                    "plan_type": getattr(pr.gjeldende_planer[0], "plan_type", None) if pr.gjeldende_planer else None,
-                    "bestemmelser": "Oppgrader for å se planbestemmelser og arealformål",
+                    "planer": [
+                        {
+                            "plan_navn": getattr(p, "plan_navn", ""),
+                            "plan_type": getattr(p, "plan_type", ""),
+                            "arealformaal": getattr(p, "arealformål", ""),
+                            "status": getattr(p, "status", ""),
+                        }
+                        for p in pr.gjeldende_planer[:5]
+                    ],
                 }
 
-            # Dispensasjoner – vis ANTALL
+            # Dispensasjoner – vis FULLT
             if hasattr(pr, "dispensasjoner") and pr.dispensasjoner:
-                resultat["dispensasjon_smakebit"] = {
-                    "antall_dispensasjoner": len(pr.dispensasjoner),
-                    "detaljer": "Oppgrader for å se dispensasjonshistorikk",
+                resultat["dispensasjoner"] = {
+                    "antall": len(pr.dispensasjoner),
+                    "liste": [
+                        {
+                            "beskrivelse": getattr(d, "beskrivelse", getattr(d, "saks_type", "")),
+                            "status": getattr(d, "status", ""),
+                        }
+                        for d in pr.dispensasjoner[:10]
+                    ],
                     "hint": f"{len(pr.dispensasjoner)} dispensasjon(er) registrert – dette kan være relevant for din byggesøknad",
                     "lenke": "/dispensasjon",
                 }
@@ -187,57 +274,56 @@ async def smakebit(
                     "hint": "Ingen dispensasjoner registrert",
                 }
 
-            # DOK – vis ANTALL berørte
+            # DOK – vis FULLT (generøs)
             da = getattr(ap, "dok_analyse", None)
             if da and hasattr(da, "berørte_datasett"):
-                resultat["dok_smakebit"] = {
+                resultat["dok_analyse"] = {
                     "antall_berørt": len(da.berørte_datasett),
                     "antall_ikke_berørt": getattr(da, "antall_ikke_berørt", 0),
-                    "datasett_navn": "Oppgrader for å se hvilke datasett som er berørt",
-                    "hint": f"{len(da.berørte_datasett)} kartdatasett berører eiendommen din" if da.berørte_datasett else "Ingen DOK-treff",
+                    "berørte_datasett": [
+                        {
+                            "navn": getattr(ds, "navn", ""),
+                            "tema": getattr(ds, "tema", ""),
+                        }
+                        for ds in da.berørte_datasett[:10]
+                    ],
                 }
 
         # ── Planslurpen (SMAKEBIT – vis at vi har data, skjul tall) ──
         ps = results.get("planslurpen")
         if ps and hasattr(ps, "antall_planer") and ps.antall_planer > 0:
             p0 = ps.planer[0]
-            resultat["reguleringsplan_smakebit"]["har_hoydegrense"] = bool(p0.maks_hoyde)
-            resultat["reguleringsplan_smakebit"]["har_utnyttelsesgrad"] = bool(p0.maks_utnyttelse)
-            resultat["reguleringsplan_smakebit"]["har_bruksbegrensning"] = bool(p0.tillatt_bruk)
+            # Planbestemmelser – vis ALT (generøs)
+            resultat["planbestemmelser"] = {
+                "maks_hoyde": p0.maks_hoyde,
+                "maks_utnyttelse": p0.maks_utnyttelse,
+                "tillatt_bruk": p0.tillatt_bruk,
+                "plan_navn": p0.plan_navn,
+            }
 
-            # Tilbygg-hint basert på data
-            if p0.maks_utnyttelse:
-                resultat["tilbygg_smakebit"] = {
-                    "potensial": "Mulig utbygging registrert",
-                    "detaljer": "Kjør tilbygganalyse for å se arealregnestykke og maks m²",
-                    "lenke": "/property",
-                }
-            else:
-                resultat["tilbygg_smakebit"] = {
-                    "potensial": "Utnyttelsesgrad ikke funnet i plan",
-                    "detaljer": "Kontakt oss for manuell vurdering",
-                }
+            # Tilbygg-potensial basert på data
+            resultat["tilbygg_potensial"] = {
+                "har_utnyttelsesgrad": bool(p0.maks_utnyttelse),
+                "har_hoydegrense": bool(p0.maks_hoyde),
+                "beskrivelse": (
+                    f"Maks utnyttelse: {p0.maks_utnyttelse}. Maks høyde: {p0.maks_hoyde or 'PBL §29-4 (gesims 8m, møne 9m)'}. "
+                    "Kontakt oss for arealregnestykke – vi beregner nøyaktig hvor mange m² du kan bygge ut."
+                ) if p0.maks_utnyttelse else (
+                    "Utnyttelsesgrad ikke funnet i plan. Kontakt oss for manuell vurdering."
+                ),
+                "nops_tilbud": "Vi lager arealregnestykke og tegninger for tilbygg/påbygg – fra 15 000 kr",
+                "lenke": "/tjenester",
+            }
 
-        # ── Verdi (SMAKEBIT – prisklasse, ikke eksakt) ──────────
+        # ── Verdi (vis estimat – generøst!) ──────────────────────
         verdi = results.get("verdi")
         if verdi and hasattr(verdi, "estimert_verdi") and verdi.estimert_verdi:
-            ev = verdi.estimert_verdi
-            if ev < 2_000_000:
-                prisklasse = "Under 2 mill"
-            elif ev < 4_000_000:
-                prisklasse = "2–4 mill"
-            elif ev < 6_000_000:
-                prisklasse = "4–6 mill"
-            elif ev < 8_000_000:
-                prisklasse = "6–8 mill"
-            elif ev < 10_000_000:
-                prisklasse = "8–10 mill"
-            else:
-                prisklasse = "Over 10 mill"
-            resultat["verdi_smakebit"] = {
-                "prisklasse": prisklasse,
-                "eksakt_estimat": "Oppgrader til Starter for eksakt verdiestimering",
-                "prisvekst_hint": f"Prisvekst i kommunen: {verdi.kommune_prisvekst_prosent:.1f}%" if verdi.kommune_prisvekst_prosent else None,
+            resultat["verdiestimering"] = {
+                "estimert_verdi_kr": verdi.estimert_verdi,
+                "pris_per_kvm": verdi.pris_per_kvm,
+                "kommune_median_pris": verdi.kommune_median_pris,
+                "prisvekst_prosent": verdi.kommune_prisvekst_prosent,
+                "estimat_metode": verdi.estimat_metode,
             }
 
         # ── CTA-er til betalte tjenester ────────────────────────
