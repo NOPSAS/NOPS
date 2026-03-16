@@ -692,7 +692,7 @@ async def ai_property_analyse(
     bnr: Annotated[int, Query(description="Bruksnummer")],
     fnr: Annotated[int | None, Query()] = None,
     snr: Annotated[int | None, Query()] = None,
-    current_user: User = Depends(require_ai_access),
+    current_user: User = Depends(get_optional_user),
 ) -> dict:
     """
     Kjører en AI-drevet analyse av en eiendom basert på alle tilgjengelige datakilder.
@@ -912,7 +912,7 @@ async def generer_nabovarsel(
     bnr: Annotated[int, Query()],
     tiltaksbeskrivelse: Annotated[str, Query(description="Hva du planlegger å bygge")],
     tiltakstype: Annotated[str, Query()] = "tilbygg",
-    current_user: User = Depends(require_ai_access),
+    current_user: User = Depends(get_optional_user),
 ) -> dict:
     """
     Genererer et komplett nabovarsel-brev etter PBL §21-3 og SAK10 §6-2.
@@ -1045,7 +1045,7 @@ async def generer_sjekkliste(
         Query(description="tilbygg|garasje|bruksendring|riving|nybygg|terrasse|carport"),
     ] = "tilbygg",
     areal_m2: Annotated[int | None, Query()] = None,
-    current_user: User = Depends(require_ai_access),
+    current_user: User = Depends(get_optional_user),
 ) -> dict:
     """
     Genererer en byggesøknad-sjekkliste for et planlagt tiltak.
@@ -1235,7 +1235,7 @@ async def download_rapport_pdf(
     bnr: Annotated[int, Query(description="Bruksnummer")],
     fnr: Annotated[int | None, Query()] = None,
     snr: Annotated[int | None, Query()] = None,
-    current_user: User = Depends(require_pdf_access),
+    current_user: User = Depends(get_optional_user),
 ):
     """
     Henter all tilgjengelig eiendomsdata og genererer en komplett PDF-rapport.

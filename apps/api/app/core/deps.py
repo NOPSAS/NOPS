@@ -118,8 +118,8 @@ async def get_current_active_architect(
 # Subscription / plan-gating dependencies
 # ---------------------------------------------------------------------------
 
-_AI_PLANS = {"STARTER", "PROFESSIONAL", "ENTERPRISE"}
-_PDF_PLANS = {"STARTER", "PROFESSIONAL", "ENTERPRISE"}
+_AI_PLANS = {"FREE", "STARTER", "PROFESSIONAL", "ENTERPRISE"}
+_PDF_PLANS = {"FREE", "STARTER", "PROFESSIONAL", "ENTERPRISE"}
 
 
 async def _hent_plan(user, db: AsyncSession) -> str:
