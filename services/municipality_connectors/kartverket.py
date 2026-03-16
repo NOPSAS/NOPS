@@ -93,7 +93,7 @@ class MatrikkelBygning:
 class Byggesak:
     """Byggesak fra kommunalt arkiv / DIBK eByggesak."""
 
-    saksnummer: str
+    saksnummer: str = ""
     sakstype: str = ""
     tittel: str = ""
     status: str = ""

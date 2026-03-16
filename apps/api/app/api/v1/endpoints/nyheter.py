@@ -242,7 +242,8 @@ async def hent_nyheter(
     alle = [a for a in alle if _er_eiendomsrelevant(a)]
 
     # Sorter etter publiseringsdato (nyeste først, best-effort)
-    def _parse_dato(s: str) -> datetime:
+    def _parse_dato(s: str) -> str:
+        """Returnerer ISO-streng for sortering. Unngår naive/aware datetime-blanding."""
         for fmt in [
             "%a, %d %b %Y %H:%M:%S %z",
             "%a, %d %b %Y %H:%M:%S %Z",
@@ -251,10 +252,10 @@ async def hent_nyheter(
             "%Y-%m-%d",
         ]:
             try:
-                return datetime.strptime(s, fmt)
+                return datetime.strptime(s, fmt).isoformat()
             except (ValueError, TypeError):
                 continue
-        return datetime.min
+        return "1970-01-01T00:00:00"
 
     alle.sort(key=lambda a: _parse_dato(a.publisert), reverse=True)
     alle = alle[:antall]
