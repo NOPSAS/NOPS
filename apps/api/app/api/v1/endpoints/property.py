@@ -175,38 +175,79 @@ async def get_dok_analyse(
     snr: Annotated[int | None, Query()] = None,
     current_user: User = Depends(get_optional_user),
 ) -> dict:
-    """Kjører DOK-analyse (det offentlige kartgrunnlaget) for en eiendom."""
+    """Kjører DOK-analyse via åpne WMS-tjenester (radon, flom, kvikkleire)."""
     try:
-        from services.municipality_connectors.arealplaner import get_dok_adapter
-        adapter = get_dok_adapter()
-        result = await adapter.analyse_eiendom(knr, gnr, bnr, fnr, snr)
+        # Hent koordinater fra adresse-API
+        lon, lat = None, None
+        try:
+            import httpx as _httpx
+            async with _httpx.AsyncClient(timeout=8) as _c:
+                resp = await _c.get(
+                    f"https://ws.geonorge.no/adresser/v1/sok",
+                    params={"kommunenummer": knr, "gardsnummer": gnr, "bruksnummer": bnr, "treffPerSide": "1"},
+                )
+                if resp.status_code == 200:
+                    data = resp.json()
+                    if data.get("adresser"):
+                        a = data["adresser"][0]
+                        lat = a.get("representasjonspunkt", {}).get("lat")
+                        lon = a.get("representasjonspunkt", {}).get("lon")
+        except Exception:
+            pass
 
-        return {
-            "kommunenummer": result.kommunenummer,
-            "gnr": result.gnr,
-            "bnr": result.bnr,
-            "berørte_datasett": [
-                {
-                    "uuid": d.uuid,
-                    "navn": d.navn,
-                    "tema": d.tema,
-                    "status": d.status,
-                    "url": d.url,
-                }
-                for d in result.berørte_datasett
-            ],
-            "ikke_berørte_datasett": [
-                {"uuid": d.uuid, "navn": d.navn, "tema": d.tema}
-                for d in result.ikke_berørte_datasett
-            ],
-            "manglende_datasett": [
-                {"uuid": d.uuid, "navn": d.navn}
-                for d in result.manglende_datasett
-            ],
-            "rapport_url": result.rapport_url,
-            "feilmelding": result.feilmelding,
-            "kilde": result.kilde,
-        }
+        if lon and lat:
+            from services.municipality_connectors.dok_wms import dok_analyse_wms
+            result = await dok_analyse_wms(lon, lat)
+            return {
+                "kommunenummer": knr,
+                "gnr": gnr,
+                "bnr": bnr,
+                "berørte_datasett": [
+                    {
+                        "uuid": "",
+                        "navn": f.datasett,
+                        "tema": f.kilde,
+                        "status": f.status,
+                        "beskrivelse": f.beskrivelse,
+                        "alvorlighet": f.alvorlighet,
+                        "verdi": f.verdi,
+                        "tek17": f.tek17_referanse,
+                        "tiltak": f.tiltak,
+                    }
+                    for f in result.funn if f.status == "berørt"
+                ],
+                "ikke_berørte_datasett": [
+                    {"uuid": "", "navn": f.datasett, "tema": f.kilde}
+                    for f in result.funn if f.status == "ikke_berørt"
+                ],
+                "alle_funn": [
+                    {
+                        "datasett": f.datasett,
+                        "kilde": f.kilde,
+                        "status": f.status,
+                        "beskrivelse": f.beskrivelse,
+                        "alvorlighet": f.alvorlighet,
+                        "verdi": f.verdi,
+                        "tek17": f.tek17_referanse,
+                        "tiltak": f.tiltak,
+                    }
+                    for f in result.funn
+                ],
+                "antall_berørt": result.antall_berørt,
+                "antall_ikke_berørt": result.antall_ikke_berørt,
+                "rapport_url": None,
+                "feilmelding": None,
+                "kilde": "WMS (NGU, NVE) – åpne data, ingen API-nøkkel nødvendig",
+            }
+        else:
+            return {
+                "kommunenummer": knr, "gnr": gnr, "bnr": bnr,
+                "berørte_datasett": [], "ikke_berørte_datasett": [],
+                "antall_berørt": 0, "antall_ikke_berørt": 0,
+                "rapport_url": None,
+                "feilmelding": "Kunne ikke finne koordinater for eiendommen.",
+                "kilde": None,
+            }
     except Exception as exc:
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
