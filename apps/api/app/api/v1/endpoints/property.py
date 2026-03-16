@@ -30,12 +30,10 @@ from app.models.user import User
 
 router = APIRouter()
 
-# Legg til services-stien
-_here = os.path.dirname(os.path.abspath(__file__))
-_api_root = os.path.abspath(os.path.join(_here, "../../.."))
-_project_root = os.path.abspath(os.path.join(_api_root, "../.."))
-for _p in [_api_root, _project_root, os.path.join(_project_root, "services")]:
-    if _p not in sys.path:
+# Legg til services-stien (fungerer både lokalt og i Docker)
+for _p in ["/app", "/app/services", os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../..")),
+           os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../../services"))]:
+    if _p not in sys.path and os.path.isdir(_p):
         sys.path.insert(0, _p)
 
 

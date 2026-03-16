@@ -20,8 +20,7 @@ from typing import Annotated
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
-from app.core.deps import get_current_user
-from app.models.user import User
+from app.core.deps import get_optional_user
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -39,7 +38,7 @@ TIMEOUT = httpx.Timeout(10.0)
 async def address_suggest(
     q: Annotated[str, Query(description="Adressetekst, min 3 tegn")],
     size: Annotated[int, Query(ge=1, le=20)] = 8,
-    current_user: User = Depends(get_current_user),
+    current_user = Depends(get_optional_user),
 ) -> list[dict]:
     """
     Returnerer adresseforslag for autocomplete-søk.
@@ -102,7 +101,7 @@ async def address_suggest(
 )
 async def address_lookup(
     adresse: Annotated[str, Query(description="Gateadresse, f.eks. 'Storgata 1, Oslo'")],
-    current_user: User = Depends(get_current_user),
+    current_user = Depends(get_optional_user),
 ) -> dict:
     """
     Slår opp en adresse og returnerer gnr/bnr, kommunenummer og koordinater.
