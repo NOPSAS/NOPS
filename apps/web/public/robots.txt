@@ -1,7 +1,26 @@
-# nops.no / ByggSjekk – Norges smarteste eiendomsverktøy
+# nops.no – Norges ledende plattform for digitale eiendomstjenester
 User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /account/
 Disallow: /cases/
+
+# AI crawlers
+User-agent: GPTBot
+Allow: /
+Disallow: /api/
+Disallow: /account/
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
 Sitemap: https://nops.no/sitemap.xml

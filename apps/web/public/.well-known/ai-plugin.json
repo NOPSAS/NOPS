@@ -1,0 +1,15 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "nops.no – Eiendomsverktøy",
+  "name_for_model": "nops_eiendom",
+  "description_for_human": "Norges ledende plattform for digitale eiendomstjenester. Sjekk eiendommen din gratis.",
+  "description_for_model": "nops.no er en norsk eiendomsplattform som tilbyr avviksdeteksjon, byggesøknad, 2D til 3D, energirådgivning, dispensasjon, ferdigattest og 20+ andre tjenester for eiendom og arkitektur. Brukere kan søke opp enhver norsk eiendom og få matrikkeldata, byggesaker, reguleringsplan, DOK-analyse og AI-risikovurdering.",
+  "auth": { "type": "none" },
+  "api": {
+    "type": "openapi",
+    "url": "https://nops.no/api/v1/openapi.json"
+  },
+  "logo_url": "https://nops.no/og-image.svg",
+  "contact_email": "hey@nops.no",
+  "legal_info_url": "https://nops.no/vilkar"
+}

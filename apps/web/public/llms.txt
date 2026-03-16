@@ -1,0 +1,38 @@
+# nops.no
+
+> Norges ledende plattform for digitale eiendomstjenester
+
+nops.no er en norsk SaaS-plattform som tilbyr 20+ tjenester for eiendom, byggesak og arkitektur. Plattformen drives av Konsepthus AS.
+
+## Hovedtjenester
+
+- **Eiendomssjekk**: Gratis sjekk av enhver norsk eiendom – matrikkeldata, byggesaker, reguleringsplan, DOK-analyse, ferdigattest-status og verdiestimering
+- **Avviksdeteksjon**: Norges eneste automatiske avviksdeteksjon – sammenligner offentlige registre, byggetegninger og Finn.no-annonser for å finne ulovlige tilbygg, manglende ferdigattester og feil i plantegninger
+- **2D til 3D**: Konverterer plantegninger og fasadetegninger til komplette 3D-modeller (IFC, SketchUp, Revit)
+- **Byggesøknad**: Komplett byggesøknad med tegninger og dokumentasjon – tilbygg, påbygg, bruksendring, garasje, tomtedeling, dispensasjon
+- **Energirådgivning**: AI-basert energianalyse med energimerke, Enova-støtte beregning og TEK17-sjekk
+- **Tomtetjenesten**: Mulighetsstudie med ferdighusmodeller, kostnadskalkulator og presentasjon
+- **Visualisering**: Fotorealistiske renders, virtuell staging, romplanlegging
+- **Finn.no Analyse**: Automatisk analyse av boligannonser med avviksdeteksjon
+- **Dispensasjon**: AI-generert dispensasjonssøknad med PBL §19-2 vurdering
+- **Ferdigattest**: Gratis sjekk av ferdigattest-status og hjelp med ferdigattest
+- **Nabovarsel**: AI-generert merknad på nabovarsel
+- **Situasjonsplan**: Profesjonell situasjonsplan til byggesøknad
+- **Juridisk AI**: Spørsmål og svar om PBL, TEK17 og SAK10 med paragrafhenvisninger
+- **Godkjente tegninger**: Gratis innhenting av sist godkjente byggetegninger fra kommunen (erstatter Norkart/Ambita)
+- **Investeringsanalyse**: Yield, ROI og cashflow-beregning for eiendom
+- **Eiendomsnyheter**: Aggregert fra norske eiendomsmedier
+
+## Priser
+
+- Gratis: 5 eiendomsoppslag/mnd med matrikkeldata, byggesaker og reguleringsplan
+- Starter: 499 kr/mnd – AI-analyse, avviksdeteksjon, PDF-rapporter
+- Professional: 999 kr/mnd – ubegrenset alt, API-tilgang, team
+- Byggesøknad: fra 15 000 kr per prosjekt
+- Tomtetjenesten: 15 000 kr eller 2% av salgssum
+
+## Kontakt
+
+- E-post: hey@nops.no
+- Nettside: https://nops.no
+- Selskap: Konsepthus AS
