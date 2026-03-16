@@ -18,7 +18,7 @@ const AuthContext = React.createContext<AuthContextValue>({
   setUser: () => {},
 });
 
-const PUBLIC_PATHS = ['/login', '/register', '/landing', '/verify-email', '/forgot-password', '/reset-password', '/pricing', '/tjenester', '/visualisering', '/utbygging', '/pakke', '/investering', '/romplanlegger', '/nyheter', '/personvern', '/vilkar', '/kontakt', '/tomter', '/finn-analyse', '/dokumenter', '/juridisk', '/property'];
+const PUBLIC_PATHS = ['/login', '/register', '/landing', '/verify-email', '/forgot-password', '/reset-password', '/pricing', '/tjenester', '/visualisering', '/utbygging', '/pakke', '/investering', '/romplanlegger', '/nyheter', '/personvern', '/vilkar', '/kontakt', '/tomter', '/finn-analyse', '/dokumenter', '/juridisk', '/property', '/naboklage', '/situasjonsplan', '/dispensasjon', '/ferdigattest'];
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();

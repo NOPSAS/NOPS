@@ -158,3 +158,25 @@ try:
     )
 except ImportError:
     pass
+
+try:
+    from app.api.v1.endpoints import dispensasjon as dispensasjon_endpoints  # noqa: F401
+
+    api_router.include_router(
+        dispensasjon_endpoints.router,
+        prefix="/dispensasjon",
+        tags=["Dispensasjon"],
+    )
+except ImportError:
+    pass
+
+try:
+    from app.api.v1.endpoints import naboklage as naboklage_endpoints  # noqa: F401
+
+    api_router.include_router(
+        naboklage_endpoints.router,
+        prefix="/naboklage",
+        tags=["Naboklage"],
+    )
+except ImportError:
+    pass

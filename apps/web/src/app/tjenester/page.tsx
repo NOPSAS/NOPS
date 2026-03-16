@@ -67,10 +67,10 @@ const tjenester: Tjeneste[] = [
     navn: 'Situasjonsplan',
     beskrivelse: 'Profesjonelle situasjonsplaner til byggesøknad. Kommuneklar PDF. Dekker hele Norge.',
     pris: 'fra 3 000 kr',
-    url: 'https://www.situasjonsplan.no',
-    ekstern: true,
+    url: '/situasjonsplan',
+    ekstern: false,
     kategori: 'tegning',
-    badge: 'situasjonsplan.no',
+    badge: 'ByggSjekk',
   },
   // Dokumentasjon
   {
@@ -95,10 +95,10 @@ const tjenester: Tjeneste[] = [
     icon: <Award className="h-6 w-6" />,
     navn: 'Ferdigattest',
     beskrivelse: 'Profesjonell hjelp til å få ferdigattest for ditt bygg. Vi håndterer søknadsprosessen.',
-    url: 'https://www.ferdigattesten.no',
-    ekstern: true,
+    url: '/ferdigattest',
+    ekstern: false,
     kategori: 'dokumentasjon',
-    badge: 'ferdigattesten.no',
+    badge: 'ByggSjekk',
   },
   // Juridisk
   {
@@ -114,19 +114,19 @@ const tjenester: Tjeneste[] = [
     icon: <Scale className="h-6 w-6" />,
     navn: 'Dispensasjon',
     beskrivelse: 'Profesjonell hjelp til byggesøknader og dispensasjoner fra plan- og bygningsloven.',
-    url: 'https://www.dispensasjonen.no',
-    ekstern: true,
+    url: '/dispensasjon',
+    ekstern: false,
     kategori: 'juridisk',
-    badge: 'dispensasjonen.no',
+    badge: 'ByggSjekk',
   },
   {
     icon: <Users className="h-6 w-6" />,
     navn: 'Naboklage',
     beskrivelse: 'Profesjonell hjelp til merknader på nabovarsel. Vi hjelper deg med å formulere og levere klage.',
-    url: 'https://www.naboklagen.no',
-    ekstern: true,
+    url: '/naboklage',
+    ekstern: false,
     kategori: 'juridisk',
-    badge: 'naboklagen.no',
+    badge: 'ByggSjekk',
   },
   // Salg
   {

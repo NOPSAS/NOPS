@@ -13,16 +13,25 @@ import {
   CheckCircle2,
   ArrowRight,
   ChevronDown,
+  AlertTriangle,
+  Box,
+  Scale,
+  Users,
+  Map,
+  Award,
+  Camera,
+  BarChart3,
+  Package,
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'ByggSjekk – Norges smarteste eiendomsverktøy for arkitekter | nops.no',
+  title: 'nops.no – Norges ledende plattform for digitale eiendomstjenester',
   description:
-    'ByggSjekk gir arkitekter og eiendomsaktører øyeblikkelig tilgang til byggesaker, arealplaner og AI-analyse – direkte fra offentlige registre. Gratis å starte.',
+    'nops.no samler avviksdeteksjon, 2D til 3D, AI-analyse, dispensasjon, nabovarsel, ferdigattest, situasjonsplan og 20+ tjenester – alt på ett sted. Gratis å starte.',
   openGraph: {
-    title: 'ByggSjekk – Norges smarteste eiendomsverktøy for arkitekter',
+    title: 'nops.no – Norges ledende plattform for digitale eiendomstjenester',
     description:
-      'Avdekk avvik, sjekk byggesaker og hent arealplaner på sekunder. Powered by Kartverket og AI.',
+      'Avviksdeteksjon, 2D til 3D-konvertering, AI-analyse, dispensasjon, ferdigattest og mer. Alt samlet på ett sted.',
     siteName: 'nops.no',
   },
 };
@@ -161,21 +170,21 @@ export default function LandingPage() {
   return (
     <main className="bg-white">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white py-24 px-4">
-        <div className="container mx-auto max-w-4xl text-center">
-          <div className="inline-flex items-center gap-2 mb-6 rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-blue-100">
+      <section className="bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white py-24 px-4">
+        <div className="container mx-auto max-w-5xl text-center">
+          <div className="inline-flex items-center gap-2 mb-6 rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-blue-200">
             <Building2 className="h-4 w-4" aria-hidden="true" />
-            nops.no / ByggSjekk
+            nops.no – Norges ledende plattform for digitale eiendomstjenester
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tight mb-6">
-            Full eiendomsanalyse<br className="hidden sm:block" /> på under ett minutt
+            Alt du trenger for eiendom,<br className="hidden sm:block" /> byggesak og arkitektur
           </h1>
           <p className="text-lg sm:text-xl text-blue-100 max-w-2xl mx-auto mb-4">
-            ByggSjekk gir deg øyeblikkelig tilgang til byggesaker, arealplaner,
-            AI-analyse og verdiestimater – direkte fra offentlige registre.
+            Avviksdeteksjon, 2D til 3D, AI-analyse, dispensasjon, ferdigattest,
+            situasjonsplan, nabovarsel og mer – samlet på ett sted.
           </p>
-          <p className="text-sm text-blue-200 mb-10">
-            Gratis å starte &middot; Ingen kredittkort nødvendig
+          <p className="text-sm text-blue-300 mb-10">
+            Søk opp eiendommen din gratis &middot; Ingen kredittkort nødvendig
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
@@ -209,16 +218,129 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Hovedtjenester – Avvik + 2D til 3D */}
+      <section className="py-20 px-4 bg-white">
+        <div className="container mx-auto max-w-5xl">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">
+              Våre hovedtjenester
+            </h2>
+            <p className="text-lg text-slate-500">
+              To bransjeledende tjenester – tilgjengelig via e-torget (Norkart)
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Avvikstjenesten */}
+            <div className="relative rounded-2xl border-2 border-red-200 bg-gradient-to-br from-red-50 to-orange-50 p-8 overflow-hidden">
+              <div className="absolute top-4 right-4">
+                <span className="rounded-full bg-red-100 border border-red-200 px-3 py-1 text-xs font-semibold text-red-700">
+                  Flaggskip
+                </span>
+              </div>
+              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-red-100 mb-5">
+                <AlertTriangle className="h-7 w-7 text-red-600" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">Avviksdeteksjon</h3>
+              <p className="text-sm text-slate-600 mb-4 leading-relaxed">
+                AI-drevet analyse som sammenligner godkjente tegninger med faktisk tilstand.
+                Avdekker ulovlige tilbygg, bruksendringer og manglende ferdigattester – automatisk.
+              </p>
+              <ul className="space-y-2 mb-6">
+                {['Sammenligner matrikkel med byggesaker', 'Finn.no-analyse med avviksrapport', 'Plantegning-analyse med Claude Vision', 'Automatisk risikovurdering'].map((item) => (
+                  <li key={item} className="flex items-center gap-2 text-sm text-slate-700">
+                    <CheckCircle2 className="h-4 w-4 text-red-500 shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/property" className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-700 transition-colors">
+                Prøv avvikssjekk <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            {/* 2D til 3D */}
+            <div className="relative rounded-2xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-8 overflow-hidden">
+              <div className="absolute top-4 right-4">
+                <span className="rounded-full bg-blue-100 border border-blue-200 px-3 py-1 text-xs font-semibold text-blue-700">
+                  Tilgjengelig via e-torget
+                </span>
+              </div>
+              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-blue-100 mb-5">
+                <Box className="h-7 w-7 text-blue-600" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">2D til 3D-konvertering</h3>
+              <p className="text-sm text-slate-600 mb-4 leading-relaxed">
+                Konverter plantegninger og fasadetegninger til komplette 3D-modeller.
+                Leveres som IFC, SketchUp eller Revit – klar for prosjektering og byggesak.
+              </p>
+              <ul className="space-y-2 mb-6">
+                {['Plantegning til 3D-modell', 'AI-visualisering og render', 'IFC, SKP, RVT-eksport', 'Fotorealistiske presentasjoner'].map((item) => (
+                  <li key={item} className="flex items-center gap-2 text-sm text-slate-700">
+                    <CheckCircle2 className="h-4 w-4 text-blue-500 shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/visualisering" className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 transition-colors">
+                Prøv visualisering <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* In-house tjenester */}
+      <section className="py-16 px-4 bg-slate-50 border-t border-slate-200">
+        <div className="container mx-auto max-w-5xl">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl font-bold text-slate-900 mb-3">
+              Alle tjenester – bygd inn i nops.no
+            </h2>
+            <p className="text-slate-500">
+              Vi har bygd inn alle tjenestene direkte – ingen eksterne sider, ingen ekstra innlogging.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {[
+              { href: '/property', icon: <Search className="h-5 w-5 text-blue-600" />, label: 'Eiendomssøk', desc: 'Matrikkel, byggesaker, arealplaner' },
+              { href: '/dispensasjon', icon: <Scale className="h-5 w-5 text-red-600" />, label: 'Dispensasjon', desc: 'AI-generert søknad' },
+              { href: '/naboklage', icon: <Users className="h-5 w-5 text-indigo-600" />, label: 'Nabovarsel', desc: 'Merknad og klage' },
+              { href: '/ferdigattest', icon: <Award className="h-5 w-5 text-green-600" />, label: 'Ferdigattest', desc: 'Sjekk og bestill' },
+              { href: '/situasjonsplan', icon: <Map className="h-5 w-5 text-emerald-600" />, label: 'Situasjonsplan', desc: 'Fra 3 000 kr' },
+              { href: '/visualisering', icon: <Camera className="h-5 w-5 text-purple-600" />, label: 'Visualisering', desc: 'AI-render og staging' },
+              { href: '/utbygging', icon: <BarChart3 className="h-5 w-5 text-amber-600" />, label: 'Utbygging', desc: 'Tomtepotensial' },
+              { href: '/investering', icon: <TrendingUp className="h-5 w-5 text-cyan-600" />, label: 'Investering', desc: 'Yield og ROI' },
+              { href: '/tomter', icon: <Building2 className="h-5 w-5 text-orange-600" />, label: 'Tomter', desc: 'Mulighetsstudie' },
+              { href: '/finn-analyse', icon: <Search className="h-5 w-5 text-rose-600" />, label: 'Finn-analyse', desc: 'Avvik i annonser' },
+              { href: '/dokumenter', icon: <FileText className="h-5 w-5 text-teal-600" />, label: 'Dokumenter', desc: 'Gratis tegninger' },
+              { href: '/pakke', icon: <Package className="h-5 w-5 text-slate-600" />, label: 'Komplett pakke', desc: 'Alt automatisk' },
+            ].map((t) => (
+              <Link
+                key={t.href}
+                href={t.href}
+                className="flex flex-col items-center gap-2 rounded-xl border border-slate-200 bg-white p-4 text-center hover:border-blue-300 hover:shadow-md transition-all"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-50">
+                  {t.icon}
+                </div>
+                <span className="text-sm font-semibold text-slate-900">{t.label}</span>
+                <span className="text-[11px] text-slate-500">{t.desc}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Features grid */}
       <section className="py-24 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-14">
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
-              Alt du trenger, samlet på ett sted
+              Eiendomssøk med komplett analyse
             </h2>
             <p className="text-lg text-slate-500 max-w-xl mx-auto">
-              ByggSjekk kobler deg til de viktigste offentlige registrene og gir
-              deg AI-drevne innsikter tilpasset din arbeidsflyt.
+              Søk opp en eiendom og få all informasjon samlet –
+              fra matrikkeldata til AI-risikovurdering og reguleringsplan.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -431,10 +553,10 @@ export default function LandingPage() {
       <section className="py-24 px-4 bg-gradient-to-br from-blue-600 to-indigo-700 text-white">
         <div className="container mx-auto max-w-2xl text-center">
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            Klar for å spare timer per prosjekt?
+            Klar for å prøve Norges mest komplette eiendomsverktøy?
           </h2>
           <p className="text-blue-100 text-lg mb-2">
-            Bli med arkitekter og eiendomsaktører som allerede bruker ByggSjekk.
+            20+ tjenester samlet på ett sted. Avviksdeteksjon, 2D til 3D, dispensasjon, ferdigattest og mer.
           </p>
           <p className="text-blue-200 text-sm mb-10">
             Gratis å starte &middot; Ingen binding &middot; Avbryt når som helst

@@ -23,6 +23,7 @@ import {
   Trees,
   Search,
   FileText,
+  Scale,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { logout } from '@/lib/api';
@@ -68,6 +69,7 @@ const AUTH_NAV = [
   { href: '/utbygging', label: 'Utbygging', icon: <BarChart3 className="h-4 w-4" /> },
   { href: '/tomter', label: 'Tomter', icon: <Trees className="h-4 w-4" /> },
   { href: '/investering', label: 'Investering', icon: <TrendingUp className="h-4 w-4" /> },
+  { href: '/dispensasjon', label: 'Dispensasjon', icon: <Scale className="h-4 w-4" /> },
   { href: '/nyheter', label: 'Nyheter', icon: <Newspaper className="h-4 w-4" /> },
   { href: '/finn-analyse', label: 'Finn-analyse', icon: <Search className="h-4 w-4" /> },
   { href: '/dokumenter', label: 'Dokumenter', icon: <FileText className="h-4 w-4" /> },
