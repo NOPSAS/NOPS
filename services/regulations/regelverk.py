@@ -209,6 +209,123 @@ TEK17_PARAGRAFER: list[Paragraf] = [
         relevans=["UNDERBUILDING_DETECTED", "USE_CHANGE_INDICATION"],
         alvorlighet="HØY",
     ),
+    # ── TEK17 hentet fra DIBK (mars 2026) ─────────────────────
+    Paragraf(
+        lov="TEK17",
+        kode="TEK17-5-2",
+        tittel="§ 5-2. Bebygd areal (BYA)",
+        ingress="Definerer bebygd areal og hva som medregnes/ikke medregnes i BYA-beregningen.",
+        fulltext=(
+            "Bebygd areal beregnes etter NS 3940:2012. BYA angis i m²-BYA i hele tall. "
+            "Medregnes: arealet bygningen opptar av terrenget (fra yttervegg/sokkel), "
+            "åpent overbygd areal, utkragede bygningsdeler med fri høyde under 5m, "
+            "konstruksjoner over 0,5m over terreng, parkeringsareal. "
+            "Medregnes IKKE: bygningsdeler under 0,5m over planert terreng, "
+            "takutstikk/utspring inntil 1,0m fra fasaden."
+        ),
+        relevans=["ADDITION_DETECTED", "UNDERBUILDING_DETECTED"],
+        alvorlighet="MIDDELS",
+    ),
+    Paragraf(
+        lov="TEK17",
+        kode="TEK17-5-8",
+        tittel="§ 5-8. Tomt",
+        ingress="Definerer tomteareal for beregning av utnyttingsgrad.",
+        fulltext=(
+            "Tomt er arealet avsatt til bebyggelse og anlegg i kommuneplanens arealdel eller reguleringsplan. "
+            "Tomtearealet omfatter arealet innenfor tomtegrensen inkl. privat adkomst og snuplass. "
+            "Arealer avsatt til samferdselsanlegg, teknisk infrastruktur, grønnstruktur "
+            "eller LNFR-områder skal IKKE medregnes i tomtearealet for beregning av utnyttingsgrad."
+        ),
+        relevans=["ADDITION_DETECTED", "UNDERBUILDING_DETECTED"],
+        alvorlighet="MIDDELS",
+    ),
+    Paragraf(
+        lov="TEK17",
+        kode="TEK17-5-9",
+        tittel="§ 5-9. Bygningers høyde",
+        ingress="Regler for gesims- og mønehøyde. Uten planbestemmelser gjelder PBL §29-4: gesims 8m, møne 9m.",
+        fulltext=(
+            "Gesims- og mønehøyde skal måles etter §6-2 og angis med kotetall eller meter fra planert terreng. "
+            "Avvik fra høydebestemmelsene i PBL §29-4 første ledd skal fastsettes i den enkelte planen. "
+            "Kommunen kan i bestemmelsene til en plan fastsette høyder for ulike deler av en bygning. "
+            "Uten planbestemmelser gjelder PBL §29-4: maks gesimshøyde 8m og maks mønehøyde 9m. "
+            "Det finnes ikke hjemmel for høydebegrensninger basert på etasjetall alene."
+        ),
+        relevans=["ADDITION_DETECTED"],
+        alvorlighet="HØY",
+    ),
+    Paragraf(
+        lov="TEK17",
+        kode="TEK17-12-7-FULL",
+        tittel="§ 12-7. Krav til utforming av rom og annet oppholdsareal (komplett)",
+        ingress="Krav til romhøyde, rullestoltilgjengelighet og universell utforming av rom.",
+        fulltext=(
+            "(1) Rom og annet oppholdsareal skal ha utforming, romhøyde og størrelse tilpasset sin funksjon. "
+            "(2) Romhøyde i boenheter: "
+            "a) Rom for varig opphold: min 2,4 m. "
+            "b) Rom ikke for varig opphold: min 2,2 m. "
+            "c) Frittliggende boligbygning inntil 30 m² BRA med én boenhet i én etasje som ikke "
+            "overstiger 4,5 m over bakken, og fritidsbolig: min 2,2 m. "
+            "d) Deler av rom kan ha lavere høyde der dette ikke påvirker tiltenkt funksjon. "
+            "(3) Ved bruksendring fra tilleggsdel til hoveddel: romhøyde kan være lavere enn 2,4 m. "
+            "(4) Tilgjengelig boenhet: dimensjonert for rullestol på inngangsplanet. "
+            "a) Trinnfri tilgang og snuareal for rullestol. "
+            "b) Nødvendige funksjoner betjenes fra rullestol. "
+            "c) Fri passasje min 0,9 m til dør/vindu utenfor møbleringssone."
+        ),
+        relevans=["USE_CHANGE_INDICATION", "BEDROOM_UTILITY_DISCREPANCY", "ROOM_DEFINITION_CHANGE"],
+        alvorlighet="HØY",
+    ),
+    Paragraf(
+        lov="TEK17",
+        kode="TEK17-12-2-FULL",
+        tittel="§ 12-2. Krav om tilgjengelig boenhet (komplett)",
+        ingress="Krav til tilgjengelighet i boenheter med og uten heis.",
+        fulltext=(
+            "(1) Boenheter i bygning med krav om heis: alle hovedfunksjoner på inngangsplanet, "
+            "tilgjengelig for personer med funksjonsnedsettelse. "
+            "(2) I bygning med heis: minst 50% av boenheter inntil 50 m² BRA skal oppfylle "
+            "krav om tilgjengelig boenhet og §12-9 (bad/toalett). "
+            "(3) Boenheter i bygning uten krav om heis: tilgjengelig på inngangsplanet "
+            "med mindre gangatkomsten oppfyller unntak i §8-5 annet ledd."
+        ),
+        relevans=["USE_CHANGE_INDICATION", "ROOM_DEFINITION_CHANGE"],
+        alvorlighet="MIDDELS",
+    ),
+    Paragraf(
+        lov="TEK17",
+        kode="TEK17-11-4",
+        tittel="§ 11-4. Bæreevne og stabilitet ved brann",
+        ingress="Krav til bæresystemets motstandsevne ved brann – avhenger av brannklasse.",
+        fulltext=(
+            "(1) Byggverk skal ha tilfredsstillende bæreevne og stabilitet ved brann. "
+            "(2) Dimensjonering skal medregne termisk påkjenning fra forventet brannenergi. "
+            "For R 90 eller høyere: brannenergi multipliseres med faktor 1,5. "
+            "(3) Brannklasse 1-2: bæresystem skal opprettholde funksjon under rømning/redning. "
+            "Unntak: R 15 for énétasjes bygg i visse risikoklasser. "
+            "(4) Brannklasse 3-4: hovedbæresystem skal opprettholde funksjon gjennom fullstendig brannforløp. "
+            "BKL 3 med maks 8 etasjer: reduserte krav til etasjeskillere. "
+            "(5) Sekundærkonstruksjoner: bevare bæreevne i rømningsfasen."
+        ),
+        relevans=["ADDITION_DETECTED", "USE_CHANGE_INDICATION"],
+        alvorlighet="HØY",
+    ),
+    Paragraf(
+        lov="TEK17",
+        kode="TEK17-5-7",
+        tittel="§ 5-7. Parkeringsareal",
+        ingress="Parkeringsareal skal inngå i beregningsgrunnlaget for grad av utnytting.",
+        fulltext=(
+            "Søknad om tiltak skal vise hvordan parkeringen løses. "
+            "Parkeringsarealet skal inngå i beregningsgrunnlaget for grad av utnytting. "
+            "Antall plasser og parkeringsløsning som medregnes skal være i samsvar med "
+            "gjeldende reguleringsplan eller kommuneplanbestemmelser. "
+            "Tommelfingerregel: 2 parkeringsplasser ≈ 36 m² BYA for eneboliger."
+        ),
+        relevans=["ADDITION_DETECTED"],
+        alvorlighet="MIDDELS",
+    ),
 ]
 
 # ---------------------------------------------------------------------------
