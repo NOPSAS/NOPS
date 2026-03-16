@@ -1,0 +1,7 @@
+# nops.no / ByggSjekk – Norges smarteste eiendomsverktøy
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /account/
+Disallow: /cases/
+Sitemap: https://nops.no/sitemap.xml

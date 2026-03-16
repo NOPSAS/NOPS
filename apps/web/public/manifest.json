@@ -1,0 +1,10 @@
+{
+  "name": "ByggSjekk \u2013 nops.no",
+  "short_name": "ByggSjekk",
+  "description": "Norges smarteste eiendomsverkt\u00f8y for arkitekter og eiendomsakt\u00f8rer",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563EB",
+  "icons": []
+}

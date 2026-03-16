@@ -1,0 +1,49 @@
+version: "3.9"
+
+# Development overrides – use together with docker-compose.yml:
+#   docker compose -f infra/docker-compose.yml -f infra/docker-compose.dev.yml up --build
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: apps/api/Dockerfile
+      target: development
+    volumes:
+      - ../apps/api:/app
+      - ../services:/app/services:ro
+      - ../packages:/app/packages:ro
+    command: uvicorn main:app --reload --host 0.0.0.0 --port 8000
+    environment:
+      DEBUG: "true"
+
+  web:
+    build:
+      context: ../apps/web
+      dockerfile: Dockerfile
+      target: deps
+    volumes:
+      - ../apps/web:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+    environment:
+      NODE_ENV: development
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@byggsjekk.no
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - db
+    networks:
+      - byggsjekk-network
+    restart: unless-stopped
+
+volumes:
+  pgadmin_data:
