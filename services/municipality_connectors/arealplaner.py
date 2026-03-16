@@ -49,8 +49,8 @@ class Dispensasjon:
     """Representerer én dispensasjon fra kommunens arkiv."""
     saks_id: str
     saks_type: str           # "dispensasjon_fra_plan", "dispensasjon_fra_lov"
+    status: str = ""         # "innvilget", "avslatt", "under_behandling"
     vedtaksdato: str | None = None
-    status: str              # "innvilget", "avslatt", "under_behandling"
     beskrivelse: str | None = None
     paragraf: str | None = None  # PBL-paragraf det er dispensert fra
     metadata: dict[str, Any] = field(default_factory=dict)
@@ -59,10 +59,10 @@ class Dispensasjon:
 @dataclass
 class DokDataset:
     """Ett DOK-datasett som er berørt av eiendommen."""
-    uuid: str
-    navn: str
-    tema: str
-    status: str              # "berørt", "ikke_berørt", "mangler"
+    uuid: str = ""
+    navn: str = ""
+    tema: str = ""
+    status: str = ""         # "berørt", "ikke_berørt", "mangler"
     detaljer: dict[str, Any] = field(default_factory=dict)
     url: str | None = None
 
