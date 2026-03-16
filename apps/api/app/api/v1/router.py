@@ -224,3 +224,14 @@ try:
     )
 except ImportError:
     pass
+
+try:
+    from app.api.v1.endpoints import bruksendring as bruksendring_endpoints  # noqa: F401
+
+    api_router.include_router(
+        bruksendring_endpoints.router,
+        prefix="/bruksendring",
+        tags=["Bruksendring"],
+    )
+except ImportError:
+    pass
