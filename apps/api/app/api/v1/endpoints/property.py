@@ -1175,10 +1175,7 @@ Svar BARE med gyldig JSON i dette formatet:
   ]
 }}
 
-Inkluder minst:
-- Alle nødvendige dokumenter (situasjonsplan, fasadetegninger, nabovarsel, søknadsskjema etc.)
-- 8-15 konkrete sjekkliste-punkter med paragrafhenvisninger
-- Eventuelle advarsler om reguleringsplan-avvik, nabovarslingskrav etc."""
+Inkluder 4-6 dokumenter og 5-8 sjekkliste-punkter. Vær KORT og konsis."""
 
         import os
         anthropic_key = os.environ.get("ANTHROPIC_API_KEY", "")
