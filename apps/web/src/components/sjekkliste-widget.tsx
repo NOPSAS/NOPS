@@ -114,7 +114,7 @@ export function SjekklisteWidget({ knr, gnr, bnr }: SjekklisteWidgetProps) {
       setResult(data);
     } catch (err: unknown) {
       const e = err as { status?: number; message?: string };
-      if (e.status === 402) {
+      if (e.status === 401 || e.status === 402) {
         setUpsell(true);
       } else {
         setError(e.message || 'Sjekkliste-generering feilet.');
@@ -212,9 +212,9 @@ export function SjekklisteWidget({ knr, gnr, bnr }: SjekklisteWidgetProps) {
                       Starter-abonnement kreves
                     </p>
                     <p className="text-xs text-amber-700 dark:text-amber-300 mt-0.5">
-                      Byggesøknad-sjekkliste er tilgjengelig fra Starter (499 kr/mnd).{' '}
-                      <a href="/pricing" className="underline font-medium">
-                        Se priser
+                      Logg inn og oppgrader til Starter (499 kr/mnd) for sjekkliste.{' '}
+                      <a href="/register" className="underline font-medium">
+                        Registrer deg / logg inn
                       </a>
                     </p>
                   </div>

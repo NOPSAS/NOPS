@@ -27,7 +27,6 @@ import {
   TrendingUp,
   BarChart3,
   Printer,
-  Users,
   Download,
   Scale,
   Box,
@@ -48,14 +47,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { getFullPropertyData, getPropertyAIAnalysis, getNaboer } from '@/lib/api';
+import { getFullPropertyData, getPropertyAIAnalysis } from '@/lib/api';
 import { AddressAutocomplete } from '@/components/address-autocomplete';
 import { PropertyMap } from '@/components/property-map';
-import { NabovarselModal } from '@/components/nabovarsel-modal';
 import { SjekklisteWidget } from '@/components/sjekkliste-widget';
 import { GebyrKalkulator } from '@/components/gebyr-kalkulator';
 import type { AddressSuggestion } from '@/lib/api';
-import type { FullPropertyResult, PropertyAIAnalysis, VerdiestimatorData, NaboAnalyseResult, PlanslurpenData } from '@/lib/types';
+import type { FullPropertyResult, PropertyAIAnalysis, VerdiestimatorData, PlanslurpenData } from '@/lib/types';
 import { useSisteSøk } from '@/hooks/use-siste-sok';
 import { useFavoritter } from '@/hooks/use-favoritter';
 
@@ -289,12 +287,11 @@ interface RelaterteTjenesterProps {
   knr: string;
   harDispensasjon: boolean;
   manglerFerdigattest: boolean;
-  harNabovarsel: boolean;
 }
 
 function RelaterteTjenester({
   adresse, gnr, bnr, knr,
-  harDispensasjon, manglerFerdigattest, harNabovarsel,
+  harDispensasjon, manglerFerdigattest,
 }: RelaterteTjenesterProps) {
   const adresseParam = encodeURIComponent(adresse);
   const eiendomParam = `gnr=${gnr}&bnr=${bnr}&knr=${knr}`;
@@ -334,17 +331,6 @@ function RelaterteTjenester({
         : 'border-slate-200 bg-white hover:bg-slate-50',
       ikonfarge: manglerFerdigattest ? 'bg-orange-100 text-orange-600' : 'bg-slate-100 text-slate-600',
       badge: manglerFerdigattest ? 'OBS' : null,
-    },
-    {
-      icon: <Users className="h-4 w-4" />,
-      navn: 'Naboklage',
-      beskrivelse: harNabovarsel
-        ? 'Naboer funnet – hjelp med merknader på nabovarsel.'
-        : 'Profesjonell hjelp med merknader på nabovarsel.',
-      href: `https://www.naboklagen.no?${eiendomParam}&adresse=${adresseParam}`,
-      farge: 'border-slate-200 bg-white hover:bg-slate-50',
-      ikonfarge: 'bg-slate-100 text-slate-600',
-      badge: null,
     },
     {
       icon: <Box className="h-4 w-4" />,
@@ -476,6 +462,13 @@ function VerdiestimatorSection({ data }: { data: VerdiestimatorData }) {
               {data.statistikk_aar && ` Statistikk fra ${data.statistikk_aar}.`}
             </p>
           </>
+        ) : data.kommune_median_pris != null ? (
+          <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 dark:bg-slate-800 dark:border-slate-700">
+            <p className="text-sm text-slate-800 dark:text-slate-200">
+              Kommunemedian: {new Intl.NumberFormat('nb-NO').format(data.kommune_median_pris)} kr/m².
+              Noyaktig estimat beregnes etter oppmaaling.
+            </p>
+          </div>
         ) : (
           <p className="text-sm text-muted-foreground">
             Utilstrekkelig data for å beregne verdiestimatet. Oppgi bruksareal for å få estimat.
@@ -506,7 +499,6 @@ function PropertyPageInner() {
   const [aiError, setAiError] = React.useState<string | null>(null);
   const [aiUpsell, setAiUpsell] = React.useState(false);
   const [pdfUpsell, setPdfUpsell] = React.useState(false);
-  const [naboer, setNaboer] = React.useState<NaboAnalyseResult | null>(null);
   const [kopiert, setKopiert] = React.useState(false);
 
   // Auto-search when arriving from a case link with params
@@ -543,7 +535,6 @@ function PropertyPageInner() {
       setResult(data);
       leggTilSøk({ knr, gnr, bnr, adresse: data.eiendom?.adresse ?? `${gnr}/${bnr}`, timestamp: Date.now() });
       setAiAnalysis(null);
-      setNaboer(null);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Ukjent feil ved eiendomsoppslag');
     } finally {
@@ -561,22 +552,13 @@ function PropertyPageInner() {
       setAiAnalysis(analyse);
     } catch (err: unknown) {
       const e = err as Error & { status?: number };
-      if (e.status === 402) {
+      if (e.status === 401 || e.status === 402) {
         setAiUpsell(true);
       } else {
         setAiError(e.message || 'AI-analyse feilet');
       }
     } finally {
       setAiLoading(false);
-    }
-  };
-
-  const handleHentNaboer = async () => {
-    try {
-      const data = await getNaboer(knr, gnr, bnr);
-      setNaboer(data);
-    } catch {
-      // silent fail
     }
   };
 
@@ -1000,8 +982,8 @@ function PropertyPageInner() {
                   <div>
                     <p className="text-sm font-medium text-amber-800 dark:text-amber-200">Starter-abonnement kreves</p>
                     <p className="text-xs text-amber-700 dark:text-amber-300 mt-0.5">
-                      AI-analyse er tilgjengelig fra Starter (499 kr/mnd) og høyere.{' '}
-                      <a href="/pricing" className="underline font-medium">Se priser</a>
+                      Logg inn og oppgrader til Starter (499 kr/mnd) for AI-analyse.{' '}
+                      <a href="/register" className="underline font-medium">Registrer deg / logg inn</a>
                     </p>
                   </div>
                 </div>
@@ -1172,6 +1154,13 @@ function PropertyPageInner() {
                 icon={<FileText className="h-4 w-4 text-green-600" />}
                 count={result.planrapport.gjeldende_planer.length}
               >
+                {(result.planrapport as Record<string, unknown>).feilmelding && (
+                  <div className="mb-4 rounded-lg border border-yellow-300 bg-yellow-50 px-4 py-3 dark:border-yellow-800 dark:bg-yellow-950">
+                    <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                      <strong>Merk:</strong> Plandata er forelopig basert pa standardsok. Kontakt oss for full planrapport.
+                    </p>
+                  </div>
+                )}
                 {result.planrapport.gjeldende_planer.length === 0 ? (
                   <p className="text-sm text-muted-foreground">Ingen gjeldende arealplaner funnet.</p>
                 ) : (
@@ -1345,7 +1334,7 @@ function PropertyPageInner() {
             )}
 
             {/* DOK-analyse */}
-            {result.dok_analyse && (
+            {result.dok_analyse ? (
               <Section
                 title="DOK-analyse (Det offentlige kartgrunnlaget)"
                 icon={<Info className="h-4 w-4 text-purple-600" />}
@@ -1412,55 +1401,21 @@ function PropertyPageInner() {
                   </div>
                 )}
               </Section>
-            )}
-
-            {/* Naboeiendommer */}
-            <Section
-              title="Naboeiendommer"
-              icon={<Users className="h-4 w-4 text-indigo-600" />}
-              defaultOpen={false}
-            >
-              {!naboer ? (
-                <div className="flex flex-col items-center gap-3 py-6">
-                  <p className="text-sm text-muted-foreground text-center">
-                    Hent naboeiendommer (≤50m radius) fra Kartverket Matrikkel
+            ) : (
+              <Section
+                title="DOK-analyse (Det offentlige kartgrunnlaget)"
+                icon={<Info className="h-4 w-4 text-purple-600" />}
+                defaultOpen={true}
+              >
+                <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-900 dark:bg-amber-950">
+                  <p className="text-sm text-amber-800 dark:text-amber-200">
+                    DOK-analyse krever API-tilgang. Kontakt{' '}
+                    <a href="mailto:hey@nops.no" className="underline font-medium">hey@nops.no</a>{' '}
+                    for aktivering.
                   </p>
-                  <Button variant="outline" size="sm" onClick={handleHentNaboer}>
-                    <Users className="h-3.5 w-3.5" />
-                    Hent naboer
-                  </Button>
                 </div>
-              ) : naboer.feilmelding ? (
-                <p className="text-sm text-muted-foreground">{naboer.feilmelding}</p>
-              ) : naboer.naboer.length === 0 ? (
-                <p className="text-sm text-muted-foreground">Ingen naboeiendommer funnet.</p>
-              ) : (
-                <div className="space-y-2">
-                  {naboer.naboer.map((n, i) => (
-                    <div key={i} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-700">
-                      <div>
-                        <p className="text-sm font-medium">Gnr. {n.gnr} / Bnr. {n.bnr}</p>
-                        {n.adresse && <p className="text-xs text-muted-foreground">{n.adresse}</p>}
-                        {n.avstand_meter != null && (
-                          <p className="text-xs text-muted-foreground">{n.avstand_meter.toFixed(0)} m unna</p>
-                        )}
-                      </div>
-                      <a
-                        href={n.se_eiendom_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-blue-600 hover:underline dark:text-blue-400 shrink-0"
-                      >
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </Section>
-
-            {/* Nabovarsel */}
-            <NabovarselModal knr={knr} gnr={gnr} bnr={bnr} />
+              </Section>
+            )}
 
             {/* Byggesøknad-sjekkliste */}
             <SjekklisteWidget knr={knr} gnr={gnr} bnr={bnr} />
@@ -1483,7 +1438,6 @@ function PropertyPageInner() {
                   s.status?.toLowerCase().includes('igangsatt') ||
                   s.status?.toLowerCase().includes('under arbeid')
               ) ?? false}
-              harNabovarsel={(naboer?.antall_naboer ?? 0) > 0}
             />
 
             {/* Feilmeldinger */}
