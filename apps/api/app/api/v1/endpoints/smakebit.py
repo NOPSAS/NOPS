@@ -274,19 +274,117 @@ async def smakebit(
                     "hint": "Ingen dispensasjoner registrert",
                 }
 
-            # DOK – vis FULLT (generøs)
+            # DOK – vis FULLT med varsler for kritiske funn
             da = getattr(ap, "dok_analyse", None)
             if da and hasattr(da, "berørte_datasett"):
+                # Klassifiser kritiske DOK-funn
+                _KRITISKE_STIKKORD = {
+                    "radon": {
+                        "alvorlighet": "HØY",
+                        "tittel": "Radon",
+                        "beskrivelse": "Eiendommen ligger i et område med forhøyet radonrisiko.",
+                        "konsekvens": "Ved byggesak kreves radonsperre og tiltak iht. TEK17 §13-5 (maks 200 Bq/m³). Ved bruksendring av kjeller til boareal er dette kritisk.",
+                        "tiltak": "Radonmåling anbefales. Ved bygging: radonmembran i grunn og tilrettelegging for radonbrønn.",
+                        "tek17": "TEK17 §13-5",
+                    },
+                    "flom": {
+                        "alvorlighet": "HØY",
+                        "tittel": "Flomfare",
+                        "beskrivelse": "Eiendommen kan være utsatt for flom.",
+                        "konsekvens": "Byggetiltak må plasseres iht. sikkerhetsklasse F1-F3 (TEK17 §7-2). Kan kreve flomvurdering fra NVE.",
+                        "tiltak": "Sjekk NVE flomsonekart. Ved byggesøknad: dokumenter sikkerhet mot flom.",
+                        "tek17": "TEK17 §7-2",
+                    },
+                    "kvikkleire": {
+                        "alvorlighet": "KRITISK",
+                        "tittel": "Kvikkleire",
+                        "beskrivelse": "Eiendommen ligger i et område med fare for kvikkleireskred.",
+                        "konsekvens": "Geoteknisk vurdering er PÅKREVD ved alle byggetiltak. NVE og kommunen stiller strenge krav.",
+                        "tiltak": "Bestill geoteknisk rapport FØR byggesøknad. Kan kreve stabiliserende tiltak.",
+                        "tek17": "TEK17 §7-3",
+                    },
+                    "skred": {
+                        "alvorlighet": "HØY",
+                        "tittel": "Skredfare",
+                        "beskrivelse": "Eiendommen kan være utsatt for skred (stein, jord, snø).",
+                        "konsekvens": "Skredfarevurdering kreves ved byggesøknad. Plassering og sikring må dokumenteres.",
+                        "tiltak": "Sjekk NVE skredfarekart. Geoteknisk rapport kan være nødvendig.",
+                        "tek17": "TEK17 §7-3",
+                    },
+                    "aktsomhet": {
+                        "alvorlighet": "MIDDELS",
+                        "tittel": "Aktsomhetssone",
+                        "beskrivelse": "Eiendommen ligger i en aktsomhetssone for naturfare.",
+                        "konsekvens": "Kommunen kan kreve utredning av naturfare ved byggesøknad.",
+                        "tiltak": "Sjekk hvilken type aktsomhetssone det gjelder. Kan kreve geoteknisk eller hydrologisk vurdering.",
+                        "tek17": "TEK17 §7-1",
+                    },
+                    "støy": {
+                        "alvorlighet": "MIDDELS",
+                        "tittel": "Støysone",
+                        "beskrivelse": "Eiendommen ligger i en støysone (vei, jernbane, fly).",
+                        "konsekvens": "Ved byggesøknad: krav til fasadeisolering og romplanlegging. Utendørs oppholdsareal kan begrenses.",
+                        "tiltak": "Støyberegning kan kreves. Fasade mot støykilde må ha tilstrekkelig lydisolering.",
+                        "tek17": "TEK17 §13-6",
+                    },
+                    "kulturminne": {
+                        "alvorlighet": "MIDDELS",
+                        "tittel": "Kulturminne / verneverdi",
+                        "beskrivelse": "Eiendommen berøres av kulturminneregistreringer.",
+                        "konsekvens": "Tiltak kan kreve godkjenning fra fylkeskommunen eller Riksantikvaren. Automatisk fredede kulturminner har streng beskyttelse.",
+                        "tiltak": "Kontakt fylkeskommunens kulturminneavdeling. SEFRAK-registrerte bygg har egne regler.",
+                        "tek17": "Kulturminneloven",
+                    },
+                    "forurens": {
+                        "alvorlighed": "HØY",
+                        "tittel": "Forurenset grunn",
+                        "beskrivelse": "Eiendommen kan ha forurenset grunn.",
+                        "konsekvens": "Graving og byggearbeid kan kreve miljøteknisk undersøkelse og tiltaksplan.",
+                        "tiltak": "Miljøteknisk grunnundersøkelse før byggestart. Kostnad typisk 30 000-100 000 kr.",
+                        "tek17": "Forurensningsforskriften kap. 2",
+                    },
+                }
+
+                dok_varsler = []
+                berørte_med_info = []
+
+                for ds in da.berørte_datasett[:15]:
+                    ds_navn = (getattr(ds, "navn", "") or "").lower()
+                    ds_tema = (getattr(ds, "tema", "") or "").lower()
+                    tekst = ds_navn + " " + ds_tema
+
+                    datasett_info = {
+                        "navn": getattr(ds, "navn", ""),
+                        "tema": getattr(ds, "tema", ""),
+                    }
+
+                    # Sjekk mot kritiske stikkord
+                    for stikkord, info in _KRITISKE_STIKKORD.items():
+                        if stikkord in tekst:
+                            datasett_info["varsel"] = info
+                            dok_varsler.append({
+                                **info,
+                                "datasett": getattr(ds, "navn", ""),
+                            })
+                            break
+
+                    berørte_med_info.append(datasett_info)
+
                 resultat["dok_analyse"] = {
                     "antall_berørt": len(da.berørte_datasett),
                     "antall_ikke_berørt": getattr(da, "antall_ikke_berørt", 0),
-                    "berørte_datasett": [
-                        {
-                            "navn": getattr(ds, "navn", ""),
-                            "tema": getattr(ds, "tema", ""),
-                        }
-                        for ds in da.berørte_datasett[:10]
-                    ],
+                    "berørte_datasett": berørte_med_info,
+                    "varsler": dok_varsler,
+                    "antall_kritiske_varsler": len([v for v in dok_varsler if v.get("alvorlighet") in ("KRITISK", "HØY")]),
+                    "oppsummering": (
+                        f"⚠️ {len(dok_varsler)} viktig(e) funn i DOK-analysen som påvirker byggesak. Se detaljer under."
+                        if dok_varsler else
+                        "Ingen kritiske funn i DOK-analysen."
+                    ),
+                    "nops_tilbud": (
+                        "nops.no hjelper med å håndtere DOK-funn i byggesøknaden – vi sørger for riktig dokumentasjon."
+                        if dok_varsler else None
+                    ),
                 }
 
         # ── Planslurpen (SMAKEBIT – vis at vi har data, skjul tall) ──
