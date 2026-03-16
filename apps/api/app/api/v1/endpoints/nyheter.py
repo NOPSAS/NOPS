@@ -90,7 +90,7 @@ KILDER: list[Nyhetskilde] = [
     Nyhetskilde(
         id="aftenposten",
         navn="Aftenposten Bolig",
-        url="https://aftenposten.no",
+        url="https://www.aftenposten.no/bolig",
         feed_url="https://www.aftenposten.no/rss/bolig",
         kategori="generelt",
         logo_tekst="AP",
@@ -102,6 +102,14 @@ KILDER: list[Nyhetskilde] = [
         feed_url="https://abcnyheter.no/rss/eiendom",
         kategori="generelt",
         logo_tekst="ABC",
+    ),
+    Nyhetskilde(
+        id="eiendomsspar",
+        navn="Eiendomsspar",
+        url="https://eiendomsspar.no",
+        feed_url="https://eiendomsspar.no/feed/",
+        kategori="bransje",
+        logo_tekst="ES",
     ),
     Nyhetskilde(
         id="regjeringen",
@@ -211,6 +219,27 @@ async def hent_nyheter(
     for r in results:
         if isinstance(r, list):
             alle.extend(r)
+
+    # Filtrer ut artikler som ikke handler om eiendom/bolig/bygg
+    # Kilder som estate, eiendomswatch, eiendomnorge, regjeringen er alltid relevante
+    _ALLTID_RELEVANT = {"estate", "eiendomswatch", "eiendomnorge", "norskeiendom", "regjeringen", "eiendomsspar"}
+    _EIENDOM_STIKKORD = {
+        "eiendom", "bolig", "bolig", "hus", "leilighet", "tomt", "bygge",
+        "bygg", "arkitekt", "megler", "regulering", "plan", "kommune",
+        "boligpris", "kvadratmeter", "kvm", "husbank", "enova", "energi",
+        "ferdigattest", "dispensasjon", "tilbygg", "påbygg", "bruksendring",
+        "nabovarsel", "situasjonsplan", "matrikkel", "kartverket",
+        "leie", "utleie", "hytte", "fritidsbolig", "garasje",
+        "renovering", "oppussing", "bad", "kjøkken", "tak",
+        "brl", "borettslag", "sameie", "selveier",
+    }
+    def _er_eiendomsrelevant(a: Nyhetsartikkel) -> bool:
+        if a.kilde_id in _ALLTID_RELEVANT:
+            return True
+        tekst = (a.tittel + " " + a.beskrivelse).lower()
+        return any(s in tekst for s in _EIENDOM_STIKKORD)
+
+    alle = [a for a in alle if _er_eiendomsrelevant(a)]
 
     # Sorter etter publiseringsdato (nyeste først, best-effort)
     def _parse_dato(s: str) -> datetime:
