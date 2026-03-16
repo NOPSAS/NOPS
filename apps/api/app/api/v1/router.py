@@ -235,3 +235,14 @@ try:
     )
 except ImportError:
     pass
+
+try:
+    from app.api.v1.endpoints import energi as energi_endpoints  # noqa: F401
+
+    api_router.include_router(
+        energi_endpoints.router,
+        prefix="/energi",
+        tags=["Energi"],
+    )
+except ImportError:
+    pass

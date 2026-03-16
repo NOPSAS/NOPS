@@ -24,6 +24,7 @@ import {
   Search,
   FileText,
   Scale,
+  Zap,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { logout } from '@/lib/api';
@@ -73,6 +74,7 @@ const AUTH_NAV = [
   { href: '/nyheter', label: 'Nyheter', icon: <Newspaper className="h-4 w-4" /> },
   { href: '/finn-analyse', label: 'Finn-analyse', icon: <Search className="h-4 w-4" /> },
   { href: '/dokumenter', label: 'Dokumenter', icon: <FileText className="h-4 w-4" /> },
+  { href: '/energi', label: 'Energi', icon: <Zap className="h-4 w-4" /> },
 ];
 
 const GUEST_NAV = [

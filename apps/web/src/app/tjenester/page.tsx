@@ -20,6 +20,7 @@ import {
   Search,
   FileSearch,
   Gavel,
+  Zap,
 } from 'lucide-react';
 
 interface Tjeneste {
@@ -200,6 +201,15 @@ const tjenester: Tjeneste[] = [
     navn: 'Finn.no Boliganalyse',
     beskrivelse: 'Analyser enhver Finn.no-annonse med AI. Finn avvik, vurder risiko og se forbedringspotensial – automatisk.',
     url: '/finn-analyse',
+    ekstern: false,
+    kategori: 'dokumentasjon',
+    badge: 'ByggSjekk',
+  },
+  {
+    icon: <Zap className="h-6 w-6" />,
+    navn: 'Energiradgivning',
+    beskrivelse: 'Se energimerke, sparepotensial og Enova-stotte for din bolig. Gratis AI-analyse med TEK17-sjekk og tiltaksplan.',
+    url: '/energi',
     ekstern: false,
     kategori: 'dokumentasjon',
     badge: 'ByggSjekk',
