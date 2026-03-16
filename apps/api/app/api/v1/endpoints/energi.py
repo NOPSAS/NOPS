@@ -189,7 +189,7 @@ Svar BARE med gyldig JSON (ingen kommentarer, ingen markdown):
         client = anthropic.AsyncAnthropic(api_key=api_key)
         response = await client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=3000,
+            max_tokens=4096,
             system="Du er en norsk energiradgiver med kunnskap om TEK17 \u00a714-2, Enova-stotteordninger og norsk byggeskikk. Estimer energiforbruk basert pa byggeaar, areal og bygningstype. Bruk realistiske norske priser og U-verdier. Energimerke A-G basert pa kWh/m2: A<95, B<120, C<145, D<175, E<205, F<250, G>250.",
             messages=[{"role": "user", "content": prompt}],
         )

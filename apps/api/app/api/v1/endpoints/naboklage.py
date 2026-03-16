@@ -93,7 +93,7 @@ Svar BARE med gyldig JSON:
         client = anthropic.AsyncAnthropic(api_key=os.environ.get("ANTHROPIC_API_KEY", ""))
         response = await client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=3500,
+            max_tokens=4096,
             system=system_prompt,
             messages=[{"role": "user", "content": user_prompt}],
         )

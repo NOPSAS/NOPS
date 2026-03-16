@@ -351,7 +351,7 @@ Beregn utbyggingspotensialet og returner JSON i dette eksakte formatet:
 
         response = await client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=3000,
+            max_tokens=4096,
             system=system_prompt,
             messages=[{"role": "user", "content": user_prompt}],
         )

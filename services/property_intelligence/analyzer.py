@@ -300,7 +300,7 @@ class PropertyIntelligenceAnalyzer:
         client = anthropic.AsyncAnthropic(api_key=self.anthropic_api_key)
         response = await client.messages.create(
             model=self.anthropic_model,
-            max_tokens=2048,
+            max_tokens=4096,
             messages=[{"role": "user", "content": prompt}],
         )
         text = response.content[0].text.strip()
@@ -322,7 +322,7 @@ class PropertyIntelligenceAnalyzer:
             model=self.openai_model,
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_object"},
-            max_tokens=2048,
+            max_tokens=4096,
         )
         return json.loads(response.choices[0].message.content)
 

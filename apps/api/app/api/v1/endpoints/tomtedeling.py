@@ -242,7 +242,7 @@ Viktig:
         client = anthropic.AsyncAnthropic(api_key=os.environ.get("ANTHROPIC_API_KEY", ""))
         response = await client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=3500,
+            max_tokens=4096,
             system=(
                 "Du er en norsk eiendomsekspert spesialisert på tomtedeling og fradeling. "
                 "Du har dyp kunnskap om PBL, kommunale reguleringsplaner og delingsprosessen. "

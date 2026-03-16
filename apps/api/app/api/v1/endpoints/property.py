@@ -994,7 +994,7 @@ Svar BARE med gyldig JSON i dette formatet:
         client = anthropic.AsyncAnthropic(api_key=anthropic_key)
         response = await client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=3000,
+            max_tokens=4096,
             system=system_prompt,
             messages=[{"role": "user", "content": user_prompt}],
         )
@@ -1185,7 +1185,7 @@ Inkluder minst:
         client = anthropic.AsyncAnthropic(api_key=anthropic_key)
         response = await client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=4000,
+            max_tokens=4096,
             system=system_prompt,
             messages=[{"role": "user", "content": user_prompt}],
         )

@@ -236,7 +236,7 @@ Svar BARE med gyldig JSON:
         client = anthropic.AsyncAnthropic(api_key=os.environ.get("ANTHROPIC_API_KEY", ""))
         response = await client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=3000,
+            max_tokens=4096,
             system=(
                 "Du er en norsk byggesaksekspert med kunnskap om PBL, SAK10, TEK17 og DIBK-veiledere. "
                 "Gi presise arealberegninger basert på dataene. Bruk realistiske kostnadsestimater. "
@@ -485,7 +485,7 @@ Estimer nåværende byggehøyde basert på:
         client = anthropic.AsyncAnthropic(api_key=os.environ.get("ANTHROPIC_API_KEY", ""))
         response = await client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=3000,
+            max_tokens=4096,
             system=(
                 "Du er en norsk byggesaksekspert. Påbygg handler om HØYDE – ikke BYA/fotavtrykk. "
                 "Vurder alltid gesimshøyde og mønehøyde opp mot plan og PBL §29-4. "

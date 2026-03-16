@@ -171,7 +171,7 @@ Svar BARE med gyldig JSON:
         client = anthropic.AsyncAnthropic(api_key=os.environ.get("ANTHROPIC_API_KEY", ""))
         response = await client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=3000,
+            max_tokens=4096,
             system=(
                 "Du er en norsk byggesaksekspert spesialisert på bruksendringer. "
                 "Du kjenner TEK17-krav for rom til varig opphold (§12-7), brannkrav (kap 11), "

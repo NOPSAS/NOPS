@@ -310,7 +310,7 @@ Svar BARE med gyldig JSON:
         client = anthropic.AsyncAnthropic(api_key=os.environ.get("ANTHROPIC_API_KEY", ""))
         response = await client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=2500,
+            max_tokens=4096,
             messages=[{"role": "user", "content": prompt}],
         )
         text = response.content[0].text.strip()
@@ -459,7 +459,7 @@ Svar BARE med gyldig JSON:
         client = anthropic.AsyncAnthropic(api_key=os.environ.get("ANTHROPIC_API_KEY", ""))
         response = await client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=3000,
+            max_tokens=4096,
             messages=[{"role": "user", "content": content_blocks}],
         )
         text = response.content[0].text.strip()

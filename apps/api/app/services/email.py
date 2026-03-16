@@ -89,14 +89,41 @@ async def send_epost(
     til: str,
     emne: str,
     html_innhold: str,
-    smtp_host: str,
-    smtp_port: int,
-    smtp_user: str,
-    smtp_password: str,
+    smtp_host: str = "",
+    smtp_port: int = 587,
+    smtp_user: str = "",
+    smtp_password: str = "",
     fra: str = "hey@nops.no",
     fra_navn: str = "nops.no",
 ) -> bool:
-    """Sender en e-post via SMTP. Returnerer True ved suksess."""
+    """Sender e-post via Resend REST API (primær) eller SMTP (fallback)."""
+    # Prøv Resend REST API først (fungerer fra cloud-servere der SMTP er blokkert)
+    if smtp_password and smtp_password.startswith("re_"):
+        try:
+            import httpx
+            async with httpx.AsyncClient(timeout=10) as client:
+                resp = await client.post(
+                    "https://api.resend.com/emails",
+                    headers={
+                        "Authorization": f"Bearer {smtp_password}",
+                        "Content-Type": "application/json",
+                    },
+                    json={
+                        "from": f"{fra_navn} <{fra}>",
+                        "to": [til],
+                        "subject": emne,
+                        "html": html_innhold,
+                    },
+                )
+                if resp.status_code in (200, 201):
+                    logger.info("E-post sendt via Resend API til %s: %s", til, emne)
+                    return True
+                else:
+                    logger.warning("Resend API feilet: %s %s", resp.status_code, resp.text[:200])
+        except Exception as exc:
+            logger.warning("Resend API feilet: %s – prøver SMTP", exc)
+
+    # Fallback: SMTP
     msg = MIMEMultipart("alternative")
     msg["Subject"] = emne
     msg["From"] = f"{fra_navn} <{fra}>"
@@ -112,7 +139,7 @@ async def send_epost(
             password=smtp_password,
             start_tls=True,
         )
-        logger.info("E-post sendt til %s: %s", til, emne)
+        logger.info("E-post sendt via SMTP til %s: %s", til, emne)
         return True
     except Exception as exc:
         logger.error("E-postsending feilet for %s: %s", til, exc)
