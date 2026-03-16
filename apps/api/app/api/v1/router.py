@@ -191,3 +191,25 @@ try:
     )
 except ImportError:
     pass
+
+try:
+    from app.api.v1.endpoints import tilbygg as tilbygg_endpoints  # noqa: F401
+
+    api_router.include_router(
+        tilbygg_endpoints.router,
+        prefix="/tilbygg",
+        tags=["Tilbygg"],
+    )
+except ImportError:
+    pass
+
+try:
+    from app.api.v1.endpoints import bestemmelser as bestemmelser_endpoints  # noqa: F401
+
+    api_router.include_router(
+        bestemmelser_endpoints.router,
+        prefix="/bestemmelser",
+        tags=["Bestemmelser"],
+    )
+except ImportError:
+    pass
