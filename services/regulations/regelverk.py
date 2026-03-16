@@ -326,6 +326,130 @@ TEK17_PARAGRAFER: list[Paragraf] = [
         relevans=["ADDITION_DETECTED"],
         alvorlighet="MIDDELS",
     ),
+    # ── Kapittel 5: Resterende paragrafer ─────────────────────
+    Paragraf(
+        lov="TEK17",
+        kode="TEK17-5-1",
+        tittel="§ 5-1. Fastsetting av grad av utnytting",
+        ingress="Grad av utnytting fastsettes i kommuneplan eller reguleringsplan som BYA, %-BYA, BRA eller %-BRA.",
+        fulltext=(
+            "(1) Grad av utnytting fastsettes i bestemmelsene til kommuneplanens arealdel eller reguleringsplan. "
+            "(2) Grad av utnytting fastsettes som: a) bebygd areal (BYA), b) prosent bebygd areal (%-BYA), "
+            "c) bruksareal (BRA), d) prosent bruksareal (%-BRA). "
+            "I områder for kjøpesentre og forretninger: alltid BRA."
+        ),
+        relevans=["ADDITION_DETECTED", "UNDERBUILDING_DETECTED"],
+        alvorlighet="MIDDELS",
+    ),
+    Paragraf(
+        lov="TEK17",
+        kode="TEK17-5-3",
+        tittel="§ 5-3. Prosent bebygd areal (%-BYA)",
+        ingress="%-BYA angir forholdet mellom BYA og tomteareal i prosent.",
+        fulltext=(
+            "%-BYA = BYA / tomteareal × 100. Angis i hele tall. "
+            "Eksempel: 20 %-BYA betyr at 20% av tomten kan bebygges. "
+            "Viktig: resultatet kan IKKE avrundes oppover. 20,1% er over grensen ved 20% BYA."
+        ),
+        relevans=["ADDITION_DETECTED"],
+        alvorlighet="MIDDELS",
+    ),
+    Paragraf(
+        lov="TEK17",
+        kode="TEK17-5-4",
+        tittel="§ 5-4. Bruksareal (BRA)",
+        ingress="BRA beregnes etter NS 3940:2012 inkludert parkeringsareal.",
+        fulltext=(
+            "(1) BRA angis i m²-BRA i hele tall. "
+            "(2) Beregning etter NS 3940:2012 med parkering fra §5-7 inkludert. "
+            "a) Etasjehøyde over 3m: beregnes som om horisontalt plan for hver 3. meter. "
+            "b) Underjordisk areal inngår i BRA med mindre plan bestemmer annet. "
+            "c) Energiberegning: ikke horisontalt plan per 3m."
+        ),
+        relevans=["ADDITION_DETECTED", "USE_CHANGE_INDICATION"],
+        alvorlighet="MIDDELS",
+    ),
+    Paragraf(
+        lov="TEK17",
+        kode="TEK17-5-5",
+        tittel="§ 5-5. Prosent bruksareal (%-BRA)",
+        ingress="%-BRA angir forholdet mellom BRA og tomteareal. Erstatter gammel %-TU.",
+        fulltext=(
+            "%-BRA = BRA / tomteareal × 100. "
+            "Gir fleksibilitet i utforming – høy bygning med lite fotavtrykk kan gi "
+            "samme %-BRA som lav bygning med stort fotavtrykk."
+        ),
+        relevans=["ADDITION_DETECTED"],
+        alvorlighet="LAV",
+    ),
+    Paragraf(
+        lov="TEK17",
+        kode="TEK17-5-6",
+        tittel="§ 5-6. Minste uteoppholdsareal (MUA)",
+        ingress="For boliger, skoler og barnehager: kommunen fastsetter minste uteoppholdsareal inkl. lekeareal.",
+        fulltext=(
+            "For boliger, skoler, barnehager og andre bygninger der det er nødvendig å avsette "
+            "minste uteoppholdsareal, bør det i planbestemmelsene angis MUA inkl. lekeareal. "
+            "MUA omfatter arealer egnet til formålet som ikke er bebygd eller brukt til kjøring/parkering. "
+            "Kommunen kan tillate at terrasser og takterrasser regnes med. "
+            "Infrastruktur (avfallsbeholdere, sykkelstativer etc.) regnes IKKE med."
+        ),
+        relevans=["ADDITION_DETECTED"],
+        alvorlighet="LAV",
+    ),
+    # ── Kapittel 1: Anvendelse ────────────────────────────────
+    Paragraf(
+        lov="TEK17",
+        kode="TEK17-1-2",
+        tittel="§ 1-2. Forskriftens anvendelse på særskilte tiltak",
+        ingress="Unntak og forenklede krav for landbruksbygninger, småhus ≤30 m², fritidsboliger og midlertidige bygg.",
+        fulltext=(
+            "Frittliggende boligbygning inntil 30 m² BRA med én boenhet i én etasje uten kjeller, "
+            "og fritidsbolig med én boenhet, har forenklede krav: "
+            "romhøyde min 2,2m (ikke 2,4m), lettere brannkrav, lettere energikrav. "
+            "Midlertidige bygninger: unntak fra kap 8, 12, 13; kun §14-3 i kap 14. "
+            "Studentboliger: egne regler for fellesareal og tilgjengelighet."
+        ),
+        relevans=["ADDITION_DETECTED", "USE_CHANGE_INDICATION"],
+        alvorlighet="MIDDELS",
+    ),
+    # ── Kapittel 7: Naturpåkjenninger ─────────────────────────
+    Paragraf(
+        lov="TEK17",
+        kode="TEK17-7-2",
+        tittel="§ 7-2. Sikkerhet mot flom og stormflo",
+        ingress="Byggverk plasseres i sikkerhetsklasser F1-F3 basert på konsekvensgrad.",
+        fulltext=(
+            "Sikkerhetsklasser: "
+            "F1 (liten konsekvens): 1/20 årlig sannsynlighet – garasjer, lagerbygninger. "
+            "F2 (middels): 1/200 – boliger, skoler, kontorer. "
+            "F3 (stor): 1/1000 – sykehus, brannstasjoner, avfallsanlegg. "
+            "Bygverk skal plasseres, dimensjoneres eller sikres iht. klassen. "
+            "Erosjonssikring: minsteavstand fra eroderende elvebredd = bankhøyde eller 20m (det største). "
+            "Små tiltak: enkelt tilbygg ≤50 m² BRA kan klassifiseres i F1."
+        ),
+        relevans=["ADDITION_DETECTED", "UNDERBUILDING_DETECTED"],
+        alvorlighet="HØY",
+    ),
+    # ── Kapittel 14: Energi ───────────────────────────────────
+    Paragraf(
+        lov="TEK17",
+        kode="TEK17-14-2",
+        tittel="§ 14-2. Krav til energieffektivitet",
+        ingress="Energikrav for boliger: maks energiforbruk eller komponentkrav (U-verdier, tetthet).",
+        fulltext=(
+            "To veier til oppfyllelse: "
+            "Metode 1 – Energirammer: Eneboliger: 100 + 1600/m² oppvarmet BRA kWh/år. "
+            "Flerbolighus: 95 kWh/m² per år. "
+            "Metode 2 – Komponentkrav: "
+            "Vegg U-verdi ≤ 0,18 W/(m²K), Tak U-verdi ≤ 0,13 W/(m²K), "
+            "Vindu U-verdi ≤ 0,80 W/(m²K), Lufttetthet ≤ 0,6 luftvekslinger/t ved 50 Pa. "
+            "Beregning etter NS 3031:2014. "
+            "Flerboligbygg: separate målere for oppvarming og varmtvann."
+        ),
+        relevans=["ADDITION_DETECTED", "USE_CHANGE_INDICATION"],
+        alvorlighet="MIDDELS",
+    ),
 ]
 
 # ---------------------------------------------------------------------------
