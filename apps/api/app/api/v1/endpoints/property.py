@@ -1182,7 +1182,7 @@ Inkluder 4-6 dokumenter og 5-8 sjekkliste-punkter. Vær KORT og konsis."""
         client = anthropic.AsyncAnthropic(api_key=anthropic_key)
         response = await client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=4096,
+            max_tokens=8192,
             system=system_prompt,
             messages=[{"role": "user", "content": user_prompt}],
         )
