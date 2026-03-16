@@ -207,7 +207,7 @@ class MatrikkelAdapter:
     """
 
     def __init__(self, client: httpx.AsyncClient | None = None):
-        self._client = client or httpx.AsyncClient(timeout=TIMEOUT)
+        self._client = client or httpx.AsyncClient(timeout=TIMEOUT, headers={"User-Agent": "nops.no/1.0 (+https://nops.no) ByggSjekk"})
 
     async def hent_eiendom(
         self,
@@ -362,7 +362,7 @@ class EByggesakAdapter:
     """
 
     def __init__(self, client: httpx.AsyncClient | None = None):
-        self._client = client or httpx.AsyncClient(timeout=TIMEOUT)
+        self._client = client or httpx.AsyncClient(timeout=TIMEOUT, headers={"User-Agent": "nops.no/1.0 (+https://nops.no) ByggSjekk"})
 
     async def hent_byggesaker(
         self,
@@ -494,7 +494,7 @@ class KommuneInfoAdapter:
     _cache: dict[str, KommuneInfo] = {}
 
     def __init__(self, client: httpx.AsyncClient | None = None):
-        self._client = client or httpx.AsyncClient(timeout=TIMEOUT)
+        self._client = client or httpx.AsyncClient(timeout=TIMEOUT, headers={"User-Agent": "nops.no/1.0 (+https://nops.no) ByggSjekk"})
 
     async def hent_kommuneinfo(self, kommunenummer: str) -> KommuneInfo:
         """Henter kommunenavn og metadata."""
