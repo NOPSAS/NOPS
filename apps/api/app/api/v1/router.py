@@ -180,3 +180,14 @@ try:
     )
 except ImportError:
     pass
+
+try:
+    from app.api.v1.endpoints import tomtedeling as tomtedeling_endpoints  # noqa: F401
+
+    api_router.include_router(
+        tomtedeling_endpoints.router,
+        prefix="/tomtedeling",
+        tags=["Tomtedeling"],
+    )
+except ImportError:
+    pass
