@@ -19,8 +19,7 @@ from typing import Annotated
 import httpx
 from fastapi import APIRouter, Depends, Query
 
-from app.core.deps import get_current_user
-from app.models.user import User
+from app.core.deps import get_optional_user
 
 router = APIRouter()
 
@@ -195,7 +194,7 @@ async def _hent_feed(client: httpx.AsyncClient, kilde: Nyhetskilde) -> list[Nyhe
 async def hent_nyheter(
     kategori: Annotated[str | None, Query(description="Filtrer: bransje|marked|politikk|generelt")] = None,
     antall: Annotated[int, Query(ge=1, le=100)] = 30,
-    current_user: User = Depends(get_current_user),
+    current_user = Depends(get_optional_user),
 ) -> dict:
     """Henter og aggregerer nyheter fra alle konfigurerte eiendomsmedier."""
     kilder_aa_hente = KILDER
@@ -255,7 +254,7 @@ async def hent_nyheter(
     response_model=dict,
 )
 async def hent_kilder(
-    current_user: User = Depends(get_current_user),
+    current_user = Depends(get_optional_user),
 ) -> dict:
     return {
         "antall": len(KILDER),
