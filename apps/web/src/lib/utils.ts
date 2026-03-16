@@ -11,8 +11,7 @@ export function cn(...inputs: ClassValue[]) {
 /**
  * Base URL for the ByggSjekk API, read from environment.
  */
-export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 /**
  * Retrieve the stored auth token from localStorage (client-side only).

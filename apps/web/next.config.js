@@ -11,8 +11,16 @@ const nextConfig = {
   experimental: {
     missingSuspenseWithCSRBailout: false,
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${process.env.API_INTERNAL_URL || 'http://api:8000'}/api/:path*`,
+      },
+    ];
+  },
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
+    NEXT_PUBLIC_API_URL: '',
   },
   images: {
     remotePatterns: [
