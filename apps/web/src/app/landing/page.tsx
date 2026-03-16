@@ -1,794 +1,382 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import {
-  Building2,
-  FileText,
-  Camera,
-  Trees,
   AlertTriangle,
+  Box,
+  FileText,
   Search,
-  Shield,
-  CheckCircle2,
   ArrowRight,
-  Star,
+  CheckCircle2,
+  Shield,
   Zap,
-  MapPin,
-  Scale,
-  Users,
-  Award,
-  TrendingUp,
-  BarChart3,
-  Sparkles,
+  Star,
+  Building2,
+  Trees,
+  Camera,
   Clock,
-  Package,
+  MapPin,
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title:
-    'nops.no – Sjekk eiendommen din gratis | Norges ledende eiendomsplattform',
+  title: 'nops.no – Sjekk eiendommen din gratis | Avviksdeteksjon og byggesøknad',
   description:
-    'Avviksdeteksjon, byggesøknad, 2D til 3D, energirådgivning og 20+ tjenester for eiendom. Søk opp adressen og få innsikt på sekunder. Gratis å starte.',
+    'Norges ledende plattform for eiendom og byggesak. Avviksdeteksjon, 2D til 3D, byggesøknad og 20+ tjenester. Søk opp adressen gratis.',
   openGraph: {
-    title:
-      'nops.no – Sjekk eiendommen din gratis | Norges ledende eiendomsplattform',
-    description:
-      'Avviksdeteksjon, byggesøknad, 2D til 3D, energirådgivning og 20+ tjenester for eiendom. Søk opp adressen og få innsikt på sekunder.',
+    title: 'nops.no – Sjekk eiendommen din gratis',
+    description: 'Avviksdeteksjon, 2D til 3D, byggesøknad og 20+ tjenester for eiendom.',
     siteName: 'nops.no',
   },
 };
 
 export default function LandingPage() {
   return (
-    <main className="bg-white">
-      {/* ───────────────────────────── 1. HERO ───────────────────────────── */}
-      <section className="relative overflow-hidden bg-slate-950 text-white">
-        {/* Subtle blue glow */}
+    <main>
+      {/* ━━━━━━━━━━━━━━━━━━━━ HERO ━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="relative overflow-hidden bg-[#0a0f1e] text-white">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[900px] rounded-full bg-blue-600/20 blur-[120px]" />
+          <div className="absolute left-1/2 top-1/3 -translate-x-1/2 h-[600px] w-[900px] rounded-full bg-blue-600/10 blur-[140px]" />
         </div>
 
-        <div className="relative z-10 mx-auto max-w-5xl px-4 pb-24 pt-28 text-center sm:pb-32 sm:pt-36">
-          {/* Badge */}
-          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2 text-sm font-medium text-blue-300 backdrop-blur">
-            <Sparkles className="h-4 w-4" aria-hidden="true" />
-            Norges ledende plattform for digitale eiendomstjenester
-          </div>
+        <div className="relative z-10 mx-auto max-w-5xl px-6 pb-28 pt-32 sm:pb-36 sm:pt-40">
+          <p className="mb-8 text-sm font-medium uppercase tracking-widest text-blue-400">
+            Eiendomsintelligens for profesjonelle
+          </p>
 
-          <h1 className="mx-auto max-w-3xl text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-            Vet du hva som gjelder for{' '}
-            <span className="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
-              eiendommen din?
-            </span>
+          <h1 className="max-w-3xl text-[2.75rem] font-extrabold leading-[1.08] tracking-tight sm:text-6xl lg:text-7xl">
+            Vi finner avvik<br className="hidden sm:block" />
+            <span className="text-blue-400">før de blir et problem</span>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-300 sm:text-xl">
-            Søk opp adressen og få øyeblikkelig innsikt i byggesaker,
-            reguleringsplan, avvik, energi og potensial.
+          <p className="mt-7 max-w-xl text-lg leading-relaxed text-slate-400">
+            nops.no sammenligner godkjente tegninger med faktisk bruk – automatisk.
+            Avviksdeteksjon, byggesøknad, 2D til 3D og 20+ tjenester for eiendom.
           </p>
 
-          {/* Search bar */}
-          <div className="mx-auto mt-10 max-w-xl">
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row">
             <Link
               href="/property"
-              className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur transition hover:border-blue-500/40 hover:bg-white/10 sm:px-6 sm:py-5"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-7 py-4 text-[15px] font-semibold text-white transition hover:bg-blue-500"
             >
-              <Search className="h-5 w-5 shrink-0 text-slate-400 sm:h-6 sm:w-6" />
-              <span className="flex-1 text-left text-base text-slate-400 sm:text-lg">
-                Skriv inn adresse...
-              </span>
-              <span className="shrink-0 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition group-hover:bg-blue-500 sm:px-6">
-                Søk
-              </span>
+              Sjekk eiendom gratis <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/avvik"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-7 py-4 text-[15px] font-semibold text-white transition hover:bg-white/10"
+            >
+              Bestill avvikskontroll
             </Link>
           </div>
 
-          <p className="mt-5 text-sm text-slate-500">
-            Gratis &middot; Ingen registrering nødvendig &middot; 100%
-            offentlige data
-          </p>
+          <div className="mt-14 flex flex-wrap gap-x-8 gap-y-3 text-[13px] text-slate-500">
+            <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> Gratis eiendomssjekk</span>
+            <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> Tilgjengelig via e-Torg (Norkart)</span>
+            <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> 100 % offentlige data</span>
+          </div>
         </div>
       </section>
 
-      {/* ─────────────────────── 2. FIRE PRODUKTER ─────────────────────── */}
-      <section className="py-24 px-4">
+      {/* ━━━━━━━━━━━━━━━ TRE HOVEDPRODUKTER ━━━━━━━━━━━━━━━ */}
+      <section className="bg-white px-6 py-28">
         <div className="mx-auto max-w-6xl">
-          <h2 className="mb-4 text-center text-3xl font-extrabold text-slate-900 sm:text-4xl lg:text-5xl">
-            Hva trenger du?
+          <p className="text-center text-sm font-semibold uppercase tracking-widest text-blue-600">Våre tjenester</p>
+          <h2 className="mt-3 text-center text-3xl font-extrabold text-slate-900 sm:text-4xl">
+            Tre produkter. Ett mål.
           </h2>
-          <p className="mx-auto mb-14 max-w-xl text-center text-lg text-slate-500">
-            Fire produkter som dekker hele verdikjeden for eiendom.
+          <p className="mx-auto mt-4 max-w-lg text-center text-[17px] leading-relaxed text-slate-500">
+            Alt du trenger for å kontrollere, dokumentere og utvikle eiendom.
           </p>
 
-          <div className="grid gap-6 sm:grid-cols-2">
-            {/* KORT 1 – Eiendomssjekk */}
-            <div className="group relative rounded-3xl border-2 border-transparent bg-white p-8 shadow-sm transition hover:shadow-lg"
-              style={{ borderImage: 'linear-gradient(135deg, #3b82f6, #06b6d4) 1' }}>
-              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-500/5 to-cyan-500/5" />
-              <div className="relative">
-                <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100">
-                  <Building2 className="h-7 w-7 text-blue-600" />
-                </div>
-                <h3 className="mb-2 text-xl font-bold text-slate-900">
-                  Sjekk eiendommen
-                </h3>
-                <p className="mb-5 text-sm leading-relaxed text-slate-600">
-                  Matrikkeldata, byggesaker, reguleringsplan, DOK-analyse,
-                  avviksdeteksjon, energimerke og verdiestimering – på sekunder.
-                </p>
-                <ul className="mb-6 grid grid-cols-2 gap-x-4 gap-y-2">
-                  {[
-                    'Avviksdeteksjon',
-                    'Ferdigattest-sjekk',
-                    'AI-risikoanalyse',
-                    'Reguleringsplan',
-                  ].map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-center gap-1.5 text-sm text-slate-700"
-                    >
-                      <CheckCircle2 className="h-4 w-4 shrink-0 text-blue-500" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                <div className="flex items-center justify-between">
-                  <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
-                    Gratis grunnsjekk
-                  </span>
-                  <Link
-                    href="/property"
-                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 transition hover:text-blue-700"
-                  >
-                    Prøv gratis <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </div>
+          <div className="mt-16 grid gap-8 lg:grid-cols-3">
+            {/* AVVIKSDETEKSJON */}
+            <div className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-8 transition hover:border-red-300 hover:shadow-xl">
+              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-red-50">
+                <AlertTriangle className="h-6 w-6 text-red-600" />
               </div>
-            </div>
-
-            {/* KORT 2 – Byggesøknad */}
-            <div className="group relative rounded-3xl border-2 border-transparent bg-white p-8 shadow-sm transition hover:shadow-lg"
-              style={{ borderImage: 'linear-gradient(135deg, #f97316, #f59e0b) 1' }}>
-              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-orange-500/5 to-amber-500/5" />
-              <div className="relative">
-                <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-100">
-                  <FileText className="h-7 w-7 text-orange-600" />
-                </div>
-                <h3 className="mb-2 text-xl font-bold text-slate-900">
-                  Søk om å bygge
-                </h3>
-                <p className="mb-5 text-sm leading-relaxed text-slate-600">
-                  Tilbygg, påbygg, bruksendring, garasje, tomtedeling – vi
-                  håndterer hele søknaden med tegninger og dokumentasjon.
-                </p>
-                <ul className="mb-6 grid grid-cols-2 gap-x-4 gap-y-2">
-                  {[
-                    'Tilbygg & påbygg',
-                    'Bruksendring',
-                    'Dispensasjon',
-                    'Situasjonsplan',
-                    'Nabovarsel',
-                  ].map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-center gap-1.5 text-sm text-slate-700"
-                    >
-                      <CheckCircle2 className="h-4 w-4 shrink-0 text-orange-500" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                <div className="flex items-center justify-between">
-                  <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-700">
-                    Fra 15 000 kr
-                  </span>
-                  <Link
-                    href="/tjenester"
-                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-orange-600 transition hover:text-orange-700"
-                  >
-                    Kom i gang <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            {/* KORT 3 – Visualisering */}
-            <div className="group relative rounded-3xl border-2 border-transparent bg-white p-8 shadow-sm transition hover:shadow-lg"
-              style={{ borderImage: 'linear-gradient(135deg, #8b5cf6, #a855f7) 1' }}>
-              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-violet-500/5 to-purple-500/5" />
-              <div className="relative">
-                <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-100">
-                  <Camera className="h-7 w-7 text-purple-600" />
-                </div>
-                <h3 className="mb-2 text-xl font-bold text-slate-900">
-                  Se før du bygger
-                </h3>
-                <p className="mb-5 text-sm leading-relaxed text-slate-600">
-                  2D til 3D, fotorealistiske renders, virtuell staging og
-                  energimodellering – vi gjør ideene dine visuelle.
-                </p>
-                <ul className="mb-6 grid grid-cols-2 gap-x-4 gap-y-2">
-                  {[
-                    '2D til 3D',
-                    'AI-render',
-                    'Virtuell staging',
-                    'Energiberegning',
-                  ].map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-center gap-1.5 text-sm text-slate-700"
-                    >
-                      <CheckCircle2 className="h-4 w-4 shrink-0 text-purple-500" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                <div className="flex items-center justify-between">
-                  <span className="rounded-full bg-purple-50 px-3 py-1 text-xs font-semibold text-purple-700">
-                    Fra 5 000 kr
-                  </span>
-                  <Link
-                    href="/visualisering"
-                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-purple-600 transition hover:text-purple-700"
-                  >
-                    Se eksempler <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            {/* KORT 4 – Tomt */}
-            <div className="group relative rounded-3xl border-2 border-transparent bg-white p-8 shadow-sm transition hover:shadow-lg"
-              style={{ borderImage: 'linear-gradient(135deg, #22c55e, #10b981) 1' }}>
-              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-green-500/5 to-emerald-500/5" />
-              <div className="relative">
-                <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-green-100">
-                  <Trees className="h-7 w-7 text-green-600" />
-                </div>
-                <h3 className="mb-2 text-xl font-bold text-slate-900">
-                  Selg tomten raskere
-                </h3>
-                <p className="mb-5 text-sm leading-relaxed text-slate-600">
-                  Mulighetsstudie med ferdighusmodeller, kostnadskalkulator og
-                  komplett presentasjon – slik at kjøperne ser potensialet.
-                </p>
-                <ul className="mb-6 grid grid-cols-2 gap-x-4 gap-y-2">
-                  {[
-                    'Mulighetsstudie',
-                    'Ferdighusmodeller',
-                    'Kostnadskalkulator',
-                    'Presentasjonsside',
-                  ].map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-center gap-1.5 text-sm text-slate-700"
-                    >
-                      <CheckCircle2 className="h-4 w-4 shrink-0 text-green-500" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                <div className="flex items-center justify-between">
-                  <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
-                    15 000 kr eller 2% av salgssum
-                  </span>
-                  <Link
-                    href="/tomter"
-                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-green-600 transition hover:text-green-700"
-                  >
-                    Bestill <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ────────────────── 3. AVVIKSDETEKSJON – FLAGGSKIP ────────────────── */}
-      <section className="px-4 py-20">
-        <div className="mx-auto max-w-4xl rounded-3xl border-2 border-red-200 bg-red-50 px-6 py-14 sm:px-12">
-          <div className="flex flex-col items-center text-center">
-            <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-red-100">
-              <AlertTriangle className="h-8 w-8 text-red-600" />
-            </div>
-            <h2 className="mb-4 text-3xl font-extrabold text-slate-900 sm:text-4xl">
-              Norges eneste automatiske avviksdeteksjon
-            </h2>
-            <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-slate-600">
-              Vi sammenligner offentlige registre, byggetegninger og
-              Finn.no-annonser – og finner avvik som ulovlige tilbygg, manglende
-              ferdigattester og feil i plantegninger.
-            </p>
-
-            <div className="mb-10 grid gap-6 sm:grid-cols-3">
-              {[
-                {
-                  icon: <Building2 className="h-6 w-6 text-red-600" />,
-                  text: 'Sjekker matrikkel mot byggesaker',
-                },
-                {
-                  icon: <Search className="h-6 w-6 text-red-600" />,
-                  text: 'Analyserer Finn.no-annonser med AI',
-                },
-                {
-                  icon: <FileText className="h-6 w-6 text-red-600" />,
-                  text: 'Sammenligner plantegninger automatisk',
-                },
-              ].map((item) => (
-                <div
-                  key={item.text}
-                  className="flex flex-col items-center gap-3 rounded-2xl bg-white p-6 shadow-sm"
-                >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-50">
-                    {item.icon}
-                  </div>
-                  <p className="text-sm font-medium text-slate-700">
-                    {item.text}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            <Link
-              href="/property"
-              className="inline-flex items-center gap-2 rounded-2xl bg-red-600 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-red-600/20 transition hover:bg-red-700"
-            >
-              Sjekk din eiendom gratis
-              <ArrowRight className="h-5 w-5" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ──────────────────── 4. SLIK FUNGERER DET ──────────────────── */}
-      <section className="border-t border-slate-100 bg-slate-50 px-4 py-24">
-        <div className="mx-auto max-w-5xl">
-          <h2 className="mb-4 text-center text-3xl font-extrabold text-slate-900 sm:text-4xl">
-            Slik fungerer nops.no
-          </h2>
-          <p className="mx-auto mb-16 max-w-lg text-center text-lg text-slate-500">
-            Fra adresse til innsikt på under ett minutt.
-          </p>
-
-          <div className="grid gap-10 md:grid-cols-3">
-            {[
-              {
-                step: '1',
-                title: 'Søk opp eiendommen',
-                desc: 'Skriv inn adresse, vi henter data fra 8+ offentlige registre.',
-                icon: <Search className="h-6 w-6 text-blue-600" />,
-              },
-              {
-                step: '2',
-                title: 'Få innsikt på sekunder',
-                desc: 'Avvik, reguleringsplan, energi, verdi og potensial – alt samlet.',
-                icon: <Zap className="h-6 w-6 text-blue-600" />,
-              },
-              {
-                step: '3',
-                title: 'Bestill det du trenger',
-                desc: 'Tegninger, søknader, visualisering eller mulighetsstudie.',
-                icon: <Package className="h-6 w-6 text-blue-600" />,
-              },
-            ].map((s) => (
-              <div key={s.step} className="flex flex-col items-center text-center">
-                <div className="relative mb-6">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600 text-2xl font-bold text-white shadow-lg shadow-blue-600/20">
-                    {s.step}
-                  </div>
-                </div>
-                <h3 className="mb-2 text-lg font-bold text-slate-900">
-                  {s.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-slate-500">
-                  {s.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─────────────────── 5. ALLE TJENESTER – GRID ─────────────────── */}
-      <section className="px-4 py-24">
-        <div className="mx-auto max-w-6xl">
-          <h2 className="mb-3 text-center text-3xl font-extrabold text-slate-900 sm:text-4xl">
-            Alt du trenger, samlet på ett sted
-          </h2>
-          <p className="mx-auto mb-14 max-w-md text-center text-lg text-slate-500">
-            20+ tjenester for eiendom, byggesak og arkitektur
-          </p>
-
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {[
-              {
-                href: '/property',
-                icon: <Search className="h-5 w-5 text-blue-600" />,
-                label: 'Eiendomssøk',
-                desc: 'Matrikkel, byggesaker og arealplaner',
-              },
-              {
-                href: '/property',
-                icon: <AlertTriangle className="h-5 w-5 text-red-600" />,
-                label: 'Avviksdeteksjon',
-                desc: 'Finn avvik automatisk med AI',
-              },
-              {
-                href: '/property',
-                icon: <Sparkles className="h-5 w-5 text-indigo-600" />,
-                label: 'AI-analyse',
-                desc: 'Risikovurdering og anbefalinger',
-              },
-              {
-                href: '/dispensasjon',
-                icon: <Scale className="h-5 w-5 text-amber-600" />,
-                label: 'Dispensasjon',
-                desc: 'AI-generert dispensasjonssøknad',
-              },
-              {
-                href: '/naboklage',
-                icon: <Users className="h-5 w-5 text-indigo-600" />,
-                label: 'Nabovarsel',
-                desc: 'Merknad og klage på byggesak',
-              },
-              {
-                href: '/ferdigattest',
-                icon: <Award className="h-5 w-5 text-green-600" />,
-                label: 'Ferdigattest',
-                desc: 'Sjekk status og bestill',
-              },
-              {
-                href: '/situasjonsplan',
-                icon: <MapPin className="h-5 w-5 text-emerald-600" />,
-                label: 'Situasjonsplan',
-                desc: 'Profesjonell situasjonsplan',
-              },
-              {
-                href: '/visualisering',
-                icon: <Camera className="h-5 w-5 text-purple-600" />,
-                label: 'Visualisering',
-                desc: '2D til 3D, render og staging',
-              },
-              {
-                href: '/property',
-                icon: <Zap className="h-5 w-5 text-yellow-600" />,
-                label: 'Energi',
-                desc: 'Energimerke og beregning',
-              },
-              {
-                href: '/tomter',
-                icon: <Trees className="h-5 w-5 text-green-600" />,
-                label: 'Tomteutvikling',
-                desc: 'Mulighetsstudie og presentasjon',
-              },
-              {
-                href: '/investering',
-                icon: <TrendingUp className="h-5 w-5 text-cyan-600" />,
-                label: 'Investeringsanalyse',
-                desc: 'Yield, ROI og verdivurdering',
-              },
-              {
-                href: '/finn-analyse',
-                icon: <BarChart3 className="h-5 w-5 text-rose-600" />,
-                label: 'Finn-analyse',
-                desc: 'Avvik i Finn.no-annonser',
-              },
-            ].map((t) => (
-              <Link
-                key={t.label}
-                href={t.href}
-                className="flex flex-col items-center gap-2.5 rounded-2xl border border-slate-200 bg-white p-5 text-center transition hover:border-blue-300 hover:shadow-md"
-              >
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-50">
-                  {t.icon}
-                </div>
-                <span className="text-sm font-semibold text-slate-900">
-                  {t.label}
-                </span>
-                <span className="text-xs leading-snug text-slate-500">
-                  {t.desc}
-                </span>
-              </Link>
-            ))}
-          </div>
-
-          <div className="mt-10 text-center">
-            <Link
-              href="/tjenester"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 transition hover:text-blue-700"
-            >
-              Se alle tjenester <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ─────────────────── 6. SOSIAL BEVISFØRING ─────────────────── */}
-      <section className="border-t border-slate-100 bg-slate-50 px-4 py-24">
-        <div className="mx-auto max-w-5xl">
-          <div className="mb-12 text-center">
-            <div className="mb-3 inline-flex items-center gap-1">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <Star
-                  key={i}
-                  className="h-5 w-5 fill-yellow-400 text-yellow-400"
-                />
-              ))}
-            </div>
-            <h2 className="mb-3 text-3xl font-extrabold text-slate-900 sm:text-4xl">
-              Brukt av arkitekter og eiendomsaktører
-            </h2>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-3">
-            {[
-              {
-                quote:
-                  'Jeg brukte å bruke halve arbeidsdagen på å innhente eiendomsinformasjon. Med nops.no gjør jeg det på fem minutter.',
-                name: 'Marie Andersen',
-                title: 'Arkitekt MNAL, Oslo',
-                initials: 'MA',
-              },
-              {
-                quote:
-                  'Endelig et verktøy som faktisk forstår arkitektens hverdag. AI-analysen fanger opp dispensasjonsbehov jeg lett kunne oversett.',
-                name: 'Torbjørn Hegdahl',
-                title: 'Sivilarkitekt, Bergen',
-                initials: 'TH',
-              },
-              {
-                quote:
-                  'Vi bruker nops.no på alle nye prosjekter. Det reduserer risiko og gjør at vi kan gi kunden et mye bedre svar allerede i første møte.',
-                name: 'Ingrid Solberg',
-                title: 'Partner, Arkitektkontor AS',
-                initials: 'IS',
-              },
-            ].map((t) => (
-              <div
-                key={t.name}
-                className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
-              >
-                <p className="text-sm italic leading-relaxed text-slate-700">
-                  &ldquo;{t.quote}&rdquo;
-                </p>
-                <div className="mt-auto flex items-center gap-3 border-t border-slate-100 pt-4">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">
-                    {t.initials}
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-slate-900">
-                      {t.name}
-                    </p>
-                    <p className="text-xs text-slate-500">{t.title}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Trust signals */}
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm font-medium text-slate-500">
-            {[
-              { icon: <Shield className="h-4 w-4" />, label: 'GDPR' },
-              {
-                icon: <Building2 className="h-4 w-4" />,
-                label: 'Norske data',
-              },
-              {
-                icon: <Clock className="h-4 w-4" />,
-                label: 'Alltid oppdatert',
-              },
-              {
-                icon: <MapPin className="h-4 w-4" />,
-                label: '100+ kommuner',
-              },
-            ].map((ts) => (
-              <span
-                key={ts.label}
-                className="inline-flex items-center gap-1.5"
-              >
-                {ts.icon}
-                {ts.label}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ──────────────────────── 7. PRISER ──────────────────────── */}
-      <section className="px-4 py-24">
-        <div className="mx-auto max-w-5xl">
-          <h2 className="mb-4 text-center text-3xl font-extrabold text-slate-900 sm:text-4xl">
-            Kom i gang gratis
-          </h2>
-          <p className="mx-auto mb-14 max-w-md text-center text-lg text-slate-500">
-            Velg planen som passer ditt behov.
-          </p>
-
-          <div className="grid gap-6 md:grid-cols-3">
-            {/* Gratis */}
-            <div className="flex flex-col rounded-2xl border border-slate-200 bg-white p-8">
-              <h3 className="mb-1 text-lg font-bold text-slate-900">Gratis</h3>
-              <p className="mb-6 text-sm text-slate-500">
-                For deg som vil prøve
+              <p className="text-xs font-bold uppercase tracking-widest text-red-600">Flaggskip</p>
+              <h3 className="mt-2 text-xl font-bold text-slate-900">Avviksdeteksjon</h3>
+              <p className="mt-3 flex-1 text-[15px] leading-relaxed text-slate-500">
+                Faglig kontroll av om annonsert bruk og areal samsvarer med
+                godkjente tegninger. Vi sammenligner – du slipper overraskelser.
               </p>
-              <p className="mb-6 text-4xl font-extrabold text-slate-900">
-                0 kr
-                <span className="text-base font-normal text-slate-400">
-                  /mnd
-                </span>
-              </p>
-              <ul className="mb-8 space-y-2.5">
-                {[
-                  '5 eiendomsoppslag/mnd',
-                  'Matrikkeldata',
-                  'Byggesakshistorikk',
-                  'Reguleringsplan',
-                ].map((f) => (
-                  <li
-                    key={f}
-                    className="flex items-center gap-2 text-sm text-slate-600"
-                  >
-                    <CheckCircle2 className="h-4 w-4 shrink-0 text-green-500" />
-                    {f}
+              <ul className="mt-6 space-y-2">
+                {['Godkjent bruk vs. faktisk bruk', 'Areal-avvik', 'Manglende ferdigattest', 'Finn.no-analyse'].map((t) => (
+                  <li key={t} className="flex items-center gap-2 text-sm text-slate-600">
+                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-red-500" />{t}
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/register"
-                className="mt-auto inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-              >
-                Opprett gratis konto
+              <Link href="/avvik" className="mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-red-600 transition hover:text-red-700">
+                Bestill avvikskontroll <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
 
-            {/* Starter */}
-            <div className="relative flex flex-col rounded-2xl border-2 border-blue-600 bg-white p-8 shadow-lg shadow-blue-600/10">
-              <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-blue-600 px-4 py-1 text-xs font-semibold text-white">
-                Populær
-              </span>
-              <h3 className="mb-1 text-lg font-bold text-slate-900">
-                Starter
-              </h3>
-              <p className="mb-6 text-sm text-slate-500">
-                For profesjonelle brukere
+            {/* 2D TIL 3D */}
+            <div className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-8 transition hover:border-blue-300 hover:shadow-xl">
+              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50">
+                <Box className="h-6 w-6 text-blue-600" />
+              </div>
+              <p className="text-xs font-bold uppercase tracking-widest text-blue-600">Tilgjengelig via e-Torg</p>
+              <h3 className="mt-2 text-xl font-bold text-slate-900">2D til 3D</h3>
+              <p className="mt-3 flex-1 text-[15px] leading-relaxed text-slate-500">
+                Vi konverterer plantegninger til komplette 3D-modeller.
+                Leveres som IFC, SketchUp eller Revit – klar for prosjektering.
               </p>
-              <p className="mb-6 text-4xl font-extrabold text-slate-900">
-                499 kr
-                <span className="text-base font-normal text-slate-400">
-                  /mnd
-                </span>
-              </p>
-              <ul className="mb-8 space-y-2.5">
-                {[
-                  'Ubegrenset oppslag',
-                  'AI-analyse og risikovurdering',
-                  'PDF-rapporter',
-                  'Avviksdeteksjon',
-                  'Finn-analyse',
-                ].map((f) => (
-                  <li
-                    key={f}
-                    className="flex items-center gap-2 text-sm text-slate-600"
-                  >
-                    <CheckCircle2 className="h-4 w-4 shrink-0 text-blue-500" />
-                    {f}
+              <ul className="mt-6 space-y-2">
+                {['Plantegning → 3D-modell', 'IFC / SKP / RVT', 'Energiberegning', 'Fotorealistisk render'].map((t) => (
+                  <li key={t} className="flex items-center gap-2 text-sm text-slate-600">
+                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-blue-500" />{t}
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/register"
-                className="mt-auto inline-flex items-center justify-center rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
-              >
-                Start Starter
+              <Link href="/visualisering" className="mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 transition hover:text-blue-700">
+                Se visualisering <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
 
-            {/* Professional */}
-            <div className="flex flex-col rounded-2xl border border-slate-200 bg-white p-8">
-              <h3 className="mb-1 text-lg font-bold text-slate-900">
-                Professional
-              </h3>
-              <p className="mb-6 text-sm text-slate-500">
-                For team og selskaper
+            {/* BYGGESØKNAD */}
+            <div className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-8 transition hover:border-emerald-300 hover:shadow-xl">
+              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50">
+                <FileText className="h-6 w-6 text-emerald-600" />
+              </div>
+              <p className="text-xs font-bold uppercase tracking-widest text-emerald-600">Komplett leveranse</p>
+              <h3 className="mt-2 text-xl font-bold text-slate-900">Byggesøknad</h3>
+              <p className="mt-3 flex-1 text-[15px] leading-relaxed text-slate-500">
+                Vi tegner, søker og følger opp. Tilbygg, påbygg, bruksendring,
+                garasje, tomtedeling og dispensasjon – fra A til Å.
               </p>
-              <p className="mb-6 text-4xl font-extrabold text-slate-900">
-                999 kr
-                <span className="text-base font-normal text-slate-400">
-                  /mnd
-                </span>
-              </p>
-              <ul className="mb-8 space-y-2.5">
-                {[
-                  'Alt i Starter',
-                  'Hvit-etikett rapporter',
-                  'API-tilgang',
-                  'Prioritert support',
-                  'Team-administrasjon',
-                ].map((f) => (
-                  <li
-                    key={f}
-                    className="flex items-center gap-2 text-sm text-slate-600"
-                  >
-                    <CheckCircle2 className="h-4 w-4 shrink-0 text-green-500" />
-                    {f}
+              <ul className="mt-6 space-y-2">
+                {['Tegninger og søknad', 'Dispensasjon', 'Nabovarsel', 'Situasjonsplan', 'Ferdigattest'].map((t) => (
+                  <li key={t} className="flex items-center gap-2 text-sm text-slate-600">
+                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-500" />{t}
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/register"
-                className="mt-auto inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-              >
-                Start Professional
+              <Link href="/tjenester" className="mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-600 transition hover:text-emerald-700">
+                Se alle tjenester <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
-
-          <p className="mt-8 text-center text-sm text-slate-400">
-            Ingen bindingstid. Avbryt når som helst.{' '}
-            <Link
-              href="/pricing"
-              className="font-medium text-blue-600 hover:text-blue-700"
-            >
-              Se alle priser
-            </Link>
-          </p>
         </div>
       </section>
 
-      {/* ──────────────────────── 8. PARTNERE ──────────────────────── */}
-      <section className="border-t border-slate-100 bg-slate-50 px-4 py-16">
+      {/* ━━━━━━━━━━━━━ GRATIS EIENDOMSSJEKK ━━━━━━━━━━━━━ */}
+      <section className="bg-slate-50 px-6 py-24">
         <div className="mx-auto max-w-4xl text-center">
-          <h2 className="mb-3 text-2xl font-bold text-slate-900">
-            Et komplett økosystem
+          <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
+            Søk opp eiendommen din – helt gratis
           </h2>
-          <p className="mx-auto mb-8 max-w-md text-slate-500">
-            Alle våre merkevarer – samlet under nops.no
+          <p className="mx-auto mt-4 max-w-lg text-[17px] text-slate-500">
+            Skriv inn adressen og få øyeblikkelig innsikt i byggesaker, reguleringsplan,
+            DOK-analyse, ferdigattest og potensielle avvik.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            {[
-              'nops.no',
-              'situasjonsplan.no',
-              'dispensasjonen.no',
-              'naboklagen.no',
-              'ferdigattesten.no',
-              'minni.no',
-            ].map((d) => (
-              <span
-                key={d}
-                className="rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-semibold text-slate-700 shadow-sm"
-              >
-                {d}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* ──────────────────────── 9. CTA FOOTER ──────────────────────── */}
-      <section className="bg-slate-900 px-4 py-24">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="mb-4 text-3xl font-extrabold text-white sm:text-4xl">
-            Klar for å sjekke eiendommen din?
-          </h2>
-          <p className="mx-auto mb-10 max-w-md text-lg text-slate-400">
-            Søk opp adressen og få innsikt på sekunder. Helt gratis.
-          </p>
           <Link
             href="/property"
-            className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-10 py-4 text-lg font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-500"
+            className="group mx-auto mt-10 flex max-w-xl items-center gap-4 rounded-2xl border border-slate-200 bg-white px-6 py-5 shadow-sm transition hover:border-blue-400 hover:shadow-lg"
           >
-            Søk opp eiendom gratis
-            <ArrowRight className="h-5 w-5" />
+            <Search className="h-6 w-6 shrink-0 text-slate-400" />
+            <span className="flex-1 text-left text-lg text-slate-400">Skriv inn adresse...</span>
+            <span className="shrink-0 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white transition group-hover:bg-blue-500">
+              Søk
+            </span>
           </Link>
-          <p className="mt-6 text-sm text-slate-500">
-            Eller kontakt oss:{' '}
-            <a
-              href="mailto:hey@nops.no"
-              className="font-medium text-slate-400 underline transition hover:text-white"
-            >
-              hey@nops.no
-            </a>
+
+          <div className="mx-auto mt-10 grid max-w-2xl grid-cols-2 gap-4 sm:grid-cols-4">
+            {[
+              { ikon: <Building2 className="h-5 w-5" />, tekst: 'Matrikkeldata' },
+              { ikon: <FileText className="h-5 w-5" />, tekst: 'Byggesaker' },
+              { ikon: <MapPin className="h-5 w-5" />, tekst: 'Reguleringsplan' },
+              { ikon: <Zap className="h-5 w-5" />, tekst: 'Energimerke' },
+            ].map((i) => (
+              <div key={i.tekst} className="flex flex-col items-center gap-2 rounded-xl bg-white p-4 shadow-sm">
+                <span className="text-blue-600">{i.ikon}</span>
+                <span className="text-xs font-semibold text-slate-700">{i.tekst}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━ SLIK FUNGERER DET ━━━━━━━━━━━━━━━━ */}
+      <section className="bg-white px-6 py-28">
+        <div className="mx-auto max-w-5xl">
+          <p className="text-center text-sm font-semibold uppercase tracking-widest text-blue-600">Prosessen</p>
+          <h2 className="mt-3 text-center text-3xl font-extrabold text-slate-900 sm:text-4xl">
+            Fra adresse til innsikt på sekunder
+          </h2>
+
+          <div className="mt-16 grid gap-12 md:grid-cols-3">
+            {[
+              { nr: '01', tittel: 'Søk opp', tekst: 'Skriv inn adresse. Vi henter data fra Kartverket, eByggesak, DOK, Planslurpen og mer.' },
+              { nr: '02', tittel: 'Se innsikt', tekst: 'Avvik, reguleringsplan, energimerke, byggesaker og verdiestimering – samlet på ett sted.' },
+              { nr: '03', tittel: 'Bestill tjeneste', tekst: 'Trenger du tegninger, søknad eller avvikskontroll? Vi leverer komplett.' },
+            ].map((s) => (
+              <div key={s.nr} className="text-center">
+                <p className="text-5xl font-extrabold text-slate-100">{s.nr}</p>
+                <h3 className="mt-4 text-lg font-bold text-slate-900">{s.tittel}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-slate-500">{s.tekst}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━ TOMTETJENESTEN ━━━━━━━━━━━━━━━━ */}
+      <section className="bg-slate-50 px-6 py-24">
+        <div className="mx-auto flex max-w-5xl flex-col items-center gap-12 lg:flex-row">
+          <div className="flex-1">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-1.5 text-xs font-semibold text-emerald-700">
+              <Trees className="h-3.5 w-3.5" /> Tomtetjenesten
+            </div>
+            <h2 className="text-3xl font-extrabold text-slate-900">
+              Selg tomten raskere
+            </h2>
+            <p className="mt-4 max-w-md text-[15px] leading-relaxed text-slate-500">
+              Vi lager mulighetsstudie med ferdighusmodeller, kostnadskalkulator
+              og komplett presentasjon. Kjøperne ser potensialet – tomten selger seg selv.
+            </p>
+            <div className="mt-6 flex gap-6">
+              <div>
+                <p className="text-2xl font-extrabold text-slate-900">15 000 kr</p>
+                <p className="text-xs text-slate-500">fastpris per hus</p>
+              </div>
+              <div className="border-l border-slate-200 pl-6">
+                <p className="text-2xl font-extrabold text-slate-900">2 %</p>
+                <p className="text-xs text-slate-500">av salgssum (alternativ)</p>
+              </div>
+            </div>
+            <Link href="/tomter" className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 transition hover:text-emerald-700">
+              Les mer om tomtetjenesten <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="grid w-full max-w-sm grid-cols-2 gap-3">
+            {['Nordbohus', 'Norgeshus', 'Alvsbyhus', 'BoligPartner', 'Mesterhus', 'Huscompagniet'].map((l) => (
+              <div key={l} className="flex items-center justify-center rounded-xl border border-slate-200 bg-white py-4 text-sm font-semibold text-slate-600">
+                {l}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━ TILLIT ━━━━━━━━━━━━━━━━ */}
+      <section className="bg-white px-6 py-20">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-10 flex items-center justify-center gap-1">
+            {[1,2,3,4,5].map((i) => (
+              <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+            ))}
+          </div>
+          <div className="grid gap-6 md:grid-cols-3">
+            {[
+              { q: 'Med nops.no gjør jeg eiendomssjekken på fem minutter i stedet for en halv dag.', n: 'Marie Andersen', t: 'Arkitekt MNAL, Oslo' },
+              { q: 'AI-analysen fanger opp dispensasjonsbehov jeg lett kunne oversett. Uunnværlig.', n: 'Torbjørn Hegdahl', t: 'Sivilarkitekt, Bergen' },
+              { q: 'Vi bruker nops.no på alle nye prosjekter. Reduserer risiko og gir bedre svar i første møte.', n: 'Ingrid Solberg', t: 'Partner, Arkitektkontor AS' },
+            ].map((t) => (
+              <div key={t.n} className="rounded-2xl border border-slate-100 bg-slate-50 p-6">
+                <p className="text-[15px] italic leading-relaxed text-slate-600">&ldquo;{t.q}&rdquo;</p>
+                <div className="mt-5 border-t border-slate-200 pt-4">
+                  <p className="text-sm font-semibold text-slate-900">{t.n}</p>
+                  <p className="text-xs text-slate-500">{t.t}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-14 flex flex-wrap items-center justify-center gap-8 text-sm text-slate-400">
+            {[
+              { i: <Shield className="h-4 w-4" />, t: 'GDPR-kompatibel' },
+              { i: <Building2 className="h-4 w-4" />, t: 'Offentlige data' },
+              { i: <Clock className="h-4 w-4" />, t: 'Sanntidsdata' },
+              { i: <MapPin className="h-4 w-4" />, t: '100+ kommuner' },
+            ].map((s) => (
+              <span key={s.t} className="flex items-center gap-1.5">{s.i} {s.t}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━ PRISER ━━━━━━━━━━━━━━━━ */}
+      <section className="bg-slate-50 px-6 py-24">
+        <div className="mx-auto max-w-4xl text-center">
+          <h2 className="text-3xl font-extrabold text-slate-900">Kom i gang gratis</h2>
+          <p className="mt-3 text-slate-500">Oppgrader når du trenger mer.</p>
+        </div>
+
+        <div className="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-3">
+          {/* Gratis */}
+          <div className="flex flex-col rounded-2xl border border-slate-200 bg-white p-8">
+            <h3 className="text-lg font-bold text-slate-900">Gratis</h3>
+            <p className="mt-1 text-4xl font-extrabold text-slate-900">0 <span className="text-base font-normal text-slate-400">kr/mnd</span></p>
+            <ul className="mt-6 flex-1 space-y-2.5">
+              {['5 eiendomsoppslag', 'Matrikkeldata', 'Byggesaker', 'Reguleringsplan', 'DOK-analyse'].map((f) => (
+                <li key={f} className="flex items-center gap-2 text-sm text-slate-600">
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500" />{f}
+                </li>
+              ))}
+            </ul>
+            <Link href="/register" className="mt-8 block rounded-xl border border-slate-200 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
+              Opprett gratis konto
+            </Link>
+          </div>
+
+          {/* Starter */}
+          <div className="relative flex flex-col rounded-2xl border-2 border-blue-600 bg-white p-8 shadow-lg shadow-blue-600/10">
+            <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-blue-600 px-4 py-1 text-xs font-semibold text-white">Populær</span>
+            <h3 className="text-lg font-bold text-slate-900">Starter</h3>
+            <p className="mt-1 text-4xl font-extrabold text-slate-900">499 <span className="text-base font-normal text-slate-400">kr/mnd</span></p>
+            <ul className="mt-6 flex-1 space-y-2.5">
+              {['Ubegrenset oppslag', 'AI-risikoanalyse', 'Avviksdeteksjon', 'PDF-rapporter', 'Finn-analyse', 'Energirådgivning'].map((f) => (
+                <li key={f} className="flex items-center gap-2 text-sm text-slate-600">
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-blue-500" />{f}
+                </li>
+              ))}
+            </ul>
+            <Link href="/register" className="mt-8 block rounded-xl bg-blue-600 py-3 text-center text-sm font-semibold text-white transition hover:bg-blue-500">
+              Start Starter
+            </Link>
+          </div>
+
+          {/* Professional */}
+          <div className="flex flex-col rounded-2xl border border-slate-200 bg-white p-8">
+            <h3 className="text-lg font-bold text-slate-900">Professional</h3>
+            <p className="mt-1 text-4xl font-extrabold text-slate-900">999 <span className="text-base font-normal text-slate-400">kr/mnd</span></p>
+            <ul className="mt-6 flex-1 space-y-2.5">
+              {['Alt i Starter', 'API-tilgang', 'Team-administrasjon', 'Hvit-etikett', 'Prioritert support'].map((f) => (
+                <li key={f} className="flex items-center gap-2 text-sm text-slate-600">
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500" />{f}
+                </li>
+              ))}
+            </ul>
+            <Link href="/register" className="mt-8 block rounded-xl border border-slate-200 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
+              Start Professional
+            </Link>
+          </div>
+        </div>
+        <p className="mt-6 text-center text-sm text-slate-400">
+          Ingen bindingstid · <Link href="/pricing" className="text-blue-600 hover:underline">Se alle priser</Link>
+        </p>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━ CTA ━━━━━━━━━━━━━━━━ */}
+      <section className="bg-[#0a0f1e] px-6 py-24">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
+            Klar for å sjekke eiendommen?
+          </h2>
+          <p className="mt-4 text-lg text-slate-400">
+            Søk opp adressen og få innsikt på sekunder. Helt gratis.
+          </p>
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">
+            <Link href="/property" className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-8 py-4 text-base font-semibold text-white transition hover:bg-blue-500">
+              Søk opp eiendom gratis <ArrowRight className="h-5 w-5" />
+            </Link>
+            <Link href="/avvik" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-8 py-4 text-base font-semibold text-white transition hover:bg-white/10">
+              Bestill avvikskontroll
+            </Link>
+          </div>
+          <p className="mt-8 text-sm text-slate-500">
+            Spørsmål? <a href="mailto:hey@nops.no" className="text-slate-400 underline hover:text-white">hey@nops.no</a>
           </p>
         </div>
       </section>
