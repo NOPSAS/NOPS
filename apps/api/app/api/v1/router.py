@@ -213,3 +213,14 @@ try:
     )
 except ImportError:
     pass
+
+try:
+    from app.api.v1.endpoints import smakebit as smakebit_endpoints  # noqa: F401
+
+    api_router.include_router(
+        smakebit_endpoints.router,
+        prefix="/smakebit",
+        tags=["Smakebit"],
+    )
+except ImportError:
+    pass
