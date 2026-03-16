@@ -92,7 +92,7 @@ export default function LandingPage() {
               <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-red-50">
                 <AlertTriangle className="h-6 w-6 text-red-600" />
               </div>
-              <p className="text-xs font-bold uppercase tracking-widest text-red-600">Flaggskip</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-red-600">Flaggskip · Gratis</p>
               <h3 className="mt-2 text-xl font-bold text-slate-900">Avviksdeteksjon</h3>
               <p className="mt-3 flex-1 text-[15px] leading-relaxed text-slate-500">
                 Faglig kontroll av om annonsert bruk og areal samsvarer med

@@ -268,15 +268,15 @@ export default function AvvikPage() {
               </div>
 
               {/* Pris */}
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-5">
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-bold text-slate-900">Avvikskontroll</p>
-                    <p className="text-xs text-slate-500">Faglig gjennomgang med rapport · 3–5 virkedager</p>
+                    <p className="text-sm font-bold text-emerald-900">Avvikskontroll</p>
+                    <p className="text-xs text-emerald-700">Faglig gjennomgang med rapport · 3–5 virkedager</p>
                   </div>
-                  <p className="text-2xl font-extrabold text-slate-900">4 900 kr</p>
+                  <p className="text-2xl font-extrabold text-emerald-700">Gratis</p>
                 </div>
-                <p className="mt-2 text-xs text-slate-400">ekskl. mva. Faktureres etter gjennomført kontroll.</p>
+                <p className="mt-2 text-xs text-emerald-600">Dersom avvik identifiseres, får du et tilbud på hva det koster å rette opp. Ingen forpliktelse.</p>
               </div>
 
               <button type="button" onClick={bestillKontroll} disabled={loading || (!knr && !finnUrl)}
@@ -398,7 +398,7 @@ export default function AvvikPage() {
             </Link>
             <a href="#bestill"
               className="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-8 py-4 text-base font-semibold text-white transition hover:bg-red-500">
-              Bestill avvikskontroll – 4 900 kr
+              Bestill gratis avvikskontroll
             </a>
           </div>
         </div>
