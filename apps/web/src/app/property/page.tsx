@@ -590,6 +590,32 @@ function PropertyPageInner() {
     });
   };
 
+  const [innsynSendt, setInnsynSendt] = React.useState(false);
+  const [innsynLaster, setInnsynLaster] = React.useState(false);
+
+  const handleBeOmTegninger = async () => {
+    setInnsynLaster(true);
+    try {
+      const params = new URLSearchParams({ knr, gnr, bnr });
+      const token = typeof window !== 'undefined' ? localStorage.getItem('byggsjekk_token') : null;
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const res = await fetch(`${apiBase}/api/v1/property/innsyn-tegninger?${params}`, {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.sendt) {
+          setInnsynSendt(true);
+        }
+      }
+    } catch {
+      // Stille feil
+    } finally {
+      setInnsynLaster(false);
+    }
+  };
+
   const handleDownloadPdf = async () => {
     setPdfUpsell(false);
     const params = new URLSearchParams({ knr, gnr, bnr });
@@ -851,6 +877,19 @@ function PropertyPageInner() {
                   >
                     {erFavoritt(knr, gnr, bnr) ? <Star className="h-3 w-3 fill-amber-400 text-amber-400" /> : <Star className="h-3 w-3" />}
                     {erFavoritt(knr, gnr, bnr) ? 'Lagret' : 'Lagre'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleBeOmTegninger}
+                    disabled={innsynSendt || innsynLaster}
+                    className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
+                      innsynSendt
+                        ? 'border-green-200 bg-green-50 text-green-700'
+                        : 'border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100'
+                    }`}
+                  >
+                    {innsynSendt ? <CheckCircle2 className="h-3 w-3" /> : <FileText className="h-3 w-3" />}
+                    {innsynSendt ? 'Tegninger forespurt!' : innsynLaster ? 'Sender...' : 'Be om tegninger'}
                   </button>
                   <button
                     type="button"

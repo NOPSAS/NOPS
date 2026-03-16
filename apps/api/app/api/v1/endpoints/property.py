@@ -1365,3 +1365,106 @@ async def beregn_kommunale_gebyrer(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail=f"Gebyrberegning feilet: {exc}",
         )
+
+
+# ---------------------------------------------------------------------------
+# Innsynsbegjæring – automatisk e-post til kommunen
+# ---------------------------------------------------------------------------
+
+
+@router.post(
+    "/innsyn-tegninger",
+    summary="Send innsynsbegjæring for godkjente tegninger til kommunen",
+    response_model=dict,
+)
+async def send_innsyn_tegninger(
+    knr: Annotated[str, Query(description="Kommunenummer")],
+    gnr: Annotated[int, Query(description="Gårdsnummer")],
+    bnr: Annotated[int, Query(description="Bruksnummer")],
+    current_user=Depends(get_optional_user),
+) -> dict:
+    """
+    Sender automatisk innsynsbegjæring til kommunen for godkjente tegninger.
+
+    E-posten ber om innsyn jf. Grunnloven §100 og offentleglova §3 i:
+    - Sist godkjente situasjonskart
+    - Sist godkjente plantegninger
+    - Sist godkjente fasadetegninger
+    - Sist godkjente snitt-tegninger
+    - Tilhørende byggesaksdokumenter
+
+    Sendes fra hey@nops.no til kommunens postmottak.
+    """
+    try:
+        from app.services.email import (
+            send_innsynsbegjæring_tegninger,
+            hent_kommune_epost,
+        )
+        from app.core.config import settings
+
+        # Hent eiendomsdata for adresse og kommunenavn
+        adresse = f"Gnr. {gnr}, Bnr. {bnr}"
+        kommunenavn = knr
+        try:
+            from services.municipality_connectors.kartverket import get_kartverket_adapter
+            kartverket = get_kartverket_adapter()
+            kr = await kartverket.full_oppslag(knr, gnr, bnr, 0, 0)
+            if not isinstance(kr, Exception):
+                if kr.eiendom and kr.eiendom.adresse:
+                    adresse = kr.eiendom.adresse
+                    if kr.eiendom.postnummer and kr.eiendom.poststed:
+                        adresse += f", {kr.eiendom.postnummer} {kr.eiendom.poststed}"
+                if kr.kommune:
+                    kommunenavn = kr.kommune.kommunenavn or knr
+        except Exception:
+            pass
+
+        # Finn kommune-e-post
+        kommune_epost = hent_kommune_epost(knr, kommunenavn)
+        if not kommune_epost:
+            return {
+                "sendt": False,
+                "grunn": f"Kunne ikke finne e-postadresse for kommune {knr} ({kommunenavn}). Kontakt kommunen direkte.",
+                "kommune_epost": None,
+            }
+
+        # Bruker-info
+        bruker_navn = "nops.no på vegne av eier"
+        if current_user:
+            bruker_navn = getattr(current_user, "full_name", None) or bruker_navn
+        svar_epost = "hey@nops.no"
+
+        # Send e-post
+        sendt = await send_innsynsbegjæring_tegninger(
+            kommune_epost=kommune_epost,
+            kommunenavn=kommunenavn,
+            knr=knr,
+            gnr=gnr,
+            bnr=bnr,
+            adresse=adresse,
+            bruker_navn=bruker_navn,
+            svar_epost=svar_epost,
+            smtp_host=settings.SMTP_HOST,
+            smtp_port=settings.SMTP_PORT,
+            smtp_user=settings.SMTP_USER,
+            smtp_password=settings.SMTP_PASSWORD,
+        )
+
+        return {
+            "sendt": sendt,
+            "kommune_epost": kommune_epost,
+            "kommunenavn": kommunenavn,
+            "adresse": adresse,
+            "gnr": gnr,
+            "bnr": bnr,
+            "melding": (
+                f"Innsynsbegjæring sendt til {kommune_epost} for {adresse} ({gnr}/{bnr}). "
+                f"Kommunen svarer normalt innen 1–3 virkedager."
+            ) if sendt else "Sending feilet. Prøv igjen senere.",
+        }
+
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"Innsynsbegjæring feilet: {exc}",
+        )

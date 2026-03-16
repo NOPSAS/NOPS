@@ -160,3 +160,107 @@ async def send_velkomst(
 ) -> bool:
     html = Template(VELKOMST_HTML).render(navn=navn.split()[0] if navn else "der", dashboard_url=f"{base_url}/")
     return await send_epost(til, "Velkommen til nops.no! 🎉", html, smtp_host, smtp_port, smtp_user, smtp_password)
+
+
+# ── Innsynsbegjæring til kommune ─────────────────────────────────────────────
+
+# Kjente kommune-e-postadresser for byggesak/postmottak
+KOMMUNE_EPOST: dict[str, str] = {
+    "3212": "post@nesodden.kommune.no",
+    "3205": "postmottak@lillestrom.kommune.no",
+    "0301": "postmottak@oslo.kommune.no",
+    "3201": "post@baerum.kommune.no",
+    "3203": "postmottak@asker.kommune.no",
+    "3207": "postmottak@nordrefollo.kommune.no",
+    "3218": "postmottak@as.kommune.no",
+    "3214": "post@frogn.kommune.no",
+    "3216": "post@vestby.kommune.no",
+    "3220": "postmottak@drammen.kommune.no",
+    "3301": "postmottak@sandefjord.kommune.no",
+    "3303": "postmottak@larvik.kommune.no",
+    "4601": "postmottak@bergen.kommune.no",
+    "5001": "postmottak@trondheim.kommune.no",
+    "5401": "postmottak@tromso.kommune.no",
+    "1103": "postmottak@stavanger.kommune.no",
+    "1106": "postmottak@sandnes.kommune.no",
+    "4204": "postmottak@kristiansand.kommune.no",
+    "1505": "postmottak@kristiansund.kommune.no",
+    "3024": "postmottak@fredrikstad.kommune.no",
+    "3025": "postmottak@halden.kommune.no",
+    "3030": "postmottak@sarpsborg.kommune.no",
+    "3005": "postmottak@drammen.kommune.no",
+}
+
+
+def hent_kommune_epost(kommunenummer: str, kommunenavn: str = "") -> str:
+    """Henter kjent e-postadresse for kommunen, eller genererer en basert på mønster."""
+    if kommunenummer in KOMMUNE_EPOST:
+        return KOMMUNE_EPOST[kommunenummer]
+    # De fleste norske kommuner følger mønsteret post@kommune.kommune.no
+    # eller postmottak@kommune.kommune.no
+    if kommunenavn:
+        slugified = kommunenavn.lower().replace("ø", "o").replace("æ", "ae").replace("å", "a").replace(" ", "")
+        return f"postmottak@{slugified}.kommune.no"
+    return ""
+
+
+INNSYN_TEGNINGER_HTML = _BASE_HTML.replace("{{ content }}", """
+<div class="header"><h1>nops.no</h1><p>Innsynsbegjæring – Godkjente byggetegninger</p></div>
+<div class="body">
+  <p>Til {{ kommunenavn }} kommune,</p>
+  <p>I forbindelse med potensielt søknadspliktige tiltak for eiendommen <strong>{{ adresse }}</strong>,
+  på <strong>{{ gnr }}/{{ bnr }}</strong> i {{ kommunenavn }} kommune (kommunenr. {{ knr }}),
+  ber vi om innsyn (jf. Grunnloven § 100 og offentleglova § 3) i følgende dokumenter:</p>
+  <ul style="color:#334155;line-height:1.8;padding-left:20px;">
+    <li>Sist godkjente situasjonskart</li>
+    <li>Sist godkjente plantegninger</li>
+    <li>Sist godkjente fasadetegninger</li>
+    <li>Sist godkjente snitt-tegninger</li>
+    <li>Tilhørende byggesaksdokumenter</li>
+  </ul>
+  <p>Vi ber om at dokumentene sendes digitalt til <strong>{{ svar_epost }}</strong>.</p>
+  <p>Med vennlig hilsen,<br>
+  <strong>{{ bruker_navn }}</strong><br>
+  på vegne av eier/tiltakshaver<br><br>
+  <em>Sendt via nops.no – Norges ledende plattform for digitale eiendomstjenester</em></p>
+</div>
+<div class="footer">
+  <p>nops.no · Konsepthus AS · hey@nops.no</p>
+</div>
+""")
+
+
+async def send_innsynsbegjæring_tegninger(
+    kommune_epost: str,
+    kommunenavn: str,
+    knr: str,
+    gnr: int,
+    bnr: int,
+    adresse: str,
+    bruker_navn: str,
+    svar_epost: str,
+    smtp_host: str,
+    smtp_port: int,
+    smtp_user: str,
+    smtp_password: str,
+) -> bool:
+    """Sender innsynsbegjæring for godkjente tegninger til kommunen."""
+    html = Template(INNSYN_TEGNINGER_HTML).render(
+        kommunenavn=kommunenavn,
+        knr=knr,
+        gnr=gnr,
+        bnr=bnr,
+        adresse=adresse,
+        bruker_navn=bruker_navn,
+        svar_epost=svar_epost,
+    )
+    emne = f"Innsynsbegjæring – Godkjente tegninger for {adresse} ({gnr}/{bnr})"
+    return await send_epost(
+        til=kommune_epost,
+        emne=emne,
+        html_innhold=html,
+        smtp_host=smtp_host,
+        smtp_port=smtp_port,
+        smtp_user=smtp_user,
+        smtp_password=smtp_password,
+    )
