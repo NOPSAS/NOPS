@@ -70,7 +70,7 @@ export function GebyrKalkulator({ knr, gnr, bnr, apiBaseUrl = '/api' }: GebyrKal
       const res = await fetch(`${apiBaseUrl}/v1/property/gebyrberegning?${params}`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${typeof window !== 'undefined' ? localStorage.getItem('token') || '' : ''}`,
+          Authorization: `Bearer ${typeof window !== 'undefined' ? localStorage.getItem('byggsjekk_token') || '' : ''}`,
         },
       });
       if (!res.ok) {
