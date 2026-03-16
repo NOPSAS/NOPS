@@ -60,28 +60,25 @@ function NavLink({ href, children, icon, onClick }: NavLinkProps) {
   );
 }
 
+// Hovednavigasjon – 4 produkter + dashboard
 const AUTH_NAV = [
   { href: '/', label: 'Dashboard', icon: <LayoutDashboard className="h-4 w-4" /> },
-  { href: '/cases', label: 'Saker', icon: <FolderOpen className="h-4 w-4" /> },
-  { href: '/property', label: 'Eiendom', icon: <MapPin className="h-4 w-4" /> },
-  { href: '/tjenester', label: 'Tjenester', icon: <Wrench className="h-4 w-4" /> },
+  { href: '/property', label: 'Eiendomssjekk', icon: <MapPin className="h-4 w-4" /> },
+  { href: '/tjenester', label: 'Byggesøknad', icon: <FileText className="h-4 w-4" /> },
   { href: '/visualisering', label: 'Visualisering', icon: <Sparkles className="h-4 w-4" /> },
-  { href: '/pakke', label: 'Pakke', icon: <Package className="h-4 w-4" /> },
-  { href: '/utbygging', label: 'Utbygging', icon: <BarChart3 className="h-4 w-4" /> },
-  { href: '/tomter', label: 'Tomter', icon: <Trees className="h-4 w-4" /> },
-  { href: '/investering', label: 'Investering', icon: <TrendingUp className="h-4 w-4" /> },
-  { href: '/dispensasjon', label: 'Dispensasjon', icon: <Scale className="h-4 w-4" /> },
-  { href: '/nyheter', label: 'Nyheter', icon: <Newspaper className="h-4 w-4" /> },
-  { href: '/finn-analyse', label: 'Finn-analyse', icon: <Search className="h-4 w-4" /> },
-  { href: '/dokumenter', label: 'Dokumenter', icon: <FileText className="h-4 w-4" /> },
+  { href: '/tomter', label: 'Tomt', icon: <Trees className="h-4 w-4" /> },
+  // Overflow – vises i "Mer"-dropdown
   { href: '/energi', label: 'Energi', icon: <Zap className="h-4 w-4" /> },
+  { href: '/nyheter', label: 'Nyheter', icon: <Newspaper className="h-4 w-4" /> },
+  { href: '/cases', label: 'Saker', icon: <FolderOpen className="h-4 w-4" /> },
 ];
 
 const GUEST_NAV = [
-  { href: '/landing', label: 'Om tjenesten' },
-  { href: '/nyheter', label: 'Nyheter' },
+  { href: '/landing', label: 'Hjem' },
+  { href: '/property', label: 'Sjekk eiendom' },
   { href: '/tjenester', label: 'Tjenester' },
   { href: '/pricing', label: 'Priser' },
+  { href: '/nyheter', label: 'Nyheter' },
 ];
 
 // Desktop: vis maks 5 lenker, resten i "Mer"-dropdown
