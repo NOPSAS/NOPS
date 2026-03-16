@@ -10,6 +10,7 @@ Beregner hvor mye man kan bygge ut basert på:
 6. DIBK-regler for søknadsfritt tilbygg
 
 POST /tilbygg/analyser – Komplett tilbygganalyse med arealregnestykke
+POST /tilbygg/paabygg – Påbygganalyse med høydebestemmelser
 """
 from __future__ import annotations
 
@@ -279,3 +280,251 @@ Svar BARE med gyldig JSON:
         raise
     except Exception as exc:
         raise HTTPException(status_code=502, detail=f"Tilbygganalyse feilet: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# Påbygg-analyse (høydebestemmelser)
+# ---------------------------------------------------------------------------
+
+# PBL §29-4: Default gesims/mønehøyde når plan ikke angir noe
+PBL_DEFAULT_GESIMS_M = 8.0
+PBL_DEFAULT_MONE_M = 9.0
+
+
+@router.post(
+    "/paabygg",
+    summary="Påbygganalyse – høydebestemmelser og muligheter",
+    response_model=dict,
+)
+async def analyser_paabygg(
+    knr: Annotated[str, Query(description="Kommunenummer")],
+    gnr: Annotated[int, Query(description="Gårdsnummer")],
+    bnr: Annotated[int, Query(description="Bruksnummer")],
+    bygningstype: Annotated[str, Query(description="bolig|garasje|uthus|annet")] = "bolig",
+    ønsket_paabygg: Annotated[str, Query()] = "",
+    current_user=Depends(get_optional_user),
+) -> dict:
+    """
+    Påbygganalyse – handler om HØYDE, ikke fotavtrykk.
+
+    Påbygg øker ikke eiendommens BYA, men endrer bygningens høyde.
+    Derfor er det høydebestemmelsene som er avgjørende:
+
+    1. Reguleringsplan: maks gesimshøyde og mønehøyde
+    2. Kommuneplan: overordnede høydebestemmelser
+    3. PBL §29-4: Default maks gesims 8m, møne 9m (når plan ikke angir)
+    4. Eksisterende byggehøyde vs tillatt → rom for påbygg?
+
+    Gjelder for bolig, garasje og andre bygninger.
+    """
+    try:
+        import anthropic
+
+        adresse = f"Gnr. {gnr}, Bnr. {bnr}"
+        kommunenavn = knr
+        bygninger = []
+        eksisterende_hoyde = None
+
+        # Hent eiendomsdata
+        try:
+            from services.municipality_connectors.kartverket import get_kartverket_adapter
+            kr = await get_kartverket_adapter().full_oppslag(knr, gnr, bnr, 0, 0)
+            if not isinstance(kr, Exception):
+                if kr.eiendom:
+                    adresse = kr.eiendom.adresse or adresse
+                if kr.kommune:
+                    kommunenavn = kr.kommune.kommunenavn or knr
+                for b in (kr.bygninger or []):
+                    bygninger.append({
+                        "type": b.bygningstype,
+                        "bra": b.bruksareal,
+                        "byggeaar": b.byggeaar,
+                        "antall_etasjer": getattr(b, "antall_etasjer", None),
+                    })
+        except Exception:
+            pass
+
+        # Hent høydebestemmelser fra Planslurpen
+        maks_hoyde_plan = None
+        maks_utnyttelse = None
+        tillatt_bruk = None
+        plan_navn = None
+
+        try:
+            from services.municipality_connectors.planslurpen import get_planslurpen_adapter
+            ps = await get_planslurpen_adapter().hent_planbestemmelser(knr, gnr, bnr, 0, 0)
+            if not isinstance(ps, Exception) and ps.antall_planer > 0:
+                for p in ps.planer[:3]:
+                    if p.maks_hoyde and maks_hoyde_plan is None:
+                        maks_hoyde_plan = p.maks_hoyde
+                        plan_navn = p.plan_navn
+                    if p.maks_utnyttelse:
+                        maks_utnyttelse = p.maks_utnyttelse
+                    if p.tillatt_bruk:
+                        tillatt_bruk = p.tillatt_bruk
+        except Exception:
+            pass
+
+        # Bestem gjeldende høydegrense
+        hoydegrense_kilde = "ukjent"
+        gesims_grense = None
+        mone_grense = None
+
+        if maks_hoyde_plan:
+            hoydegrense_kilde = f"Reguleringsplan ({plan_navn})"
+            # Prøv å parse "gesims 7m, møne 9m" eller bare "8m"
+            import re
+            gesims_match = re.search(r'gesims\w*\s*[:=]?\s*(\d+[.,]?\d*)\s*m', str(maks_hoyde_plan), re.IGNORECASE)
+            mone_match = re.search(r'møne\w*\s*[:=]?\s*(\d+[.,]?\d*)\s*m', str(maks_hoyde_plan), re.IGNORECASE)
+            tall_match = re.search(r'(\d+[.,]?\d*)\s*m', str(maks_hoyde_plan))
+
+            if gesims_match:
+                gesims_grense = float(gesims_match.group(1).replace(',', '.'))
+            if mone_match:
+                mone_grense = float(mone_match.group(1).replace(',', '.'))
+            if not gesims_grense and not mone_grense and tall_match:
+                # Enkelt tall – anta det er gesimshøyde
+                gesims_grense = float(tall_match.group(1).replace(',', '.'))
+        else:
+            hoydegrense_kilde = "PBL §29-4 (standardbestemmelse)"
+            gesims_grense = PBL_DEFAULT_GESIMS_M
+            mone_grense = PBL_DEFAULT_MONE_M
+
+        # Høydeberegning
+        hoydeberegning = {
+            "gesims_grense_m": gesims_grense,
+            "mone_grense_m": mone_grense,
+            "hoydegrense_kilde": hoydegrense_kilde,
+            "maks_hoyde_fra_plan": maks_hoyde_plan,
+            "pbl_default_gesims_m": PBL_DEFAULT_GESIMS_M,
+            "pbl_default_mone_m": PBL_DEFAULT_MONE_M,
+        }
+
+        # AI-analyse
+        byg_tekst = "\n".join(
+            f"- {b['type'] or 'Ukjent'}: BRA={b['bra'] or '?'} m², "
+            f"Etasjer={b.get('antall_etasjer') or '?'}, Byggeår={b['byggeaar'] or '?'}"
+            for b in bygninger
+        ) if bygninger else "Ingen bygningsdata."
+
+        user_prompt = f"""Analyser påbyggmuligheter for denne eiendommen.
+
+VIKTIG: Påbygg handler om HØYDE, ikke fotavtrykk/BYA. Påbygg øker ikke BYA.
+
+## Eiendom
+- Adresse: {adresse}
+- Kommune: {kommunenavn} ({knr}), Gnr/Bnr: {gnr}/{bnr}
+- Bygningstype som vurderes: {bygningstype}
+
+## Eksisterende bygninger
+{byg_tekst}
+
+## Høydebestemmelser
+- Gjeldende gesimshøydegrense: {f'{gesims_grense} m' if gesims_grense else 'ukjent'}
+- Gjeldende mønehøydegrense: {f'{mone_grense} m' if mone_grense else 'ukjent'}
+- Kilde: {hoydegrense_kilde}
+- Maks høyde fra plan: {maks_hoyde_plan or 'Ikke spesifisert i plan'}
+- Maks utnyttelse: {maks_utnyttelse or 'ukjent'}
+- Tillatt bruk: {tillatt_bruk or 'ukjent'}
+
+## Ønsket påbygg
+{ønsket_paabygg or 'Ikke spesifisert – gi generelle muligheter'}
+
+Svar BARE med gyldig JSON:
+{{
+  "kan_bygge_paabygg": true,
+  "konklusjon": "Kort konklusjon om påbyggmuligheter (2-3 setninger)",
+  "hoydevurdering": {{
+    "naaværende_gesims_estimat_m": 0.0,
+    "naaværende_mone_estimat_m": 0.0,
+    "tillatt_gesims_m": {gesims_grense or 0},
+    "tillatt_mone_m": {mone_grense or 0},
+    "gjenstaaende_hoyde_gesims_m": 0.0,
+    "gjenstaaende_hoyde_mone_m": 0.0,
+    "kilde": "{hoydegrense_kilde}",
+    "vurdering": "Hva det gjenstående høyderommet betyr i praksis"
+  }},
+  "muligheter": [
+    {{
+      "type": "Loftsutbygging / Ekstra etasje / Takhev / Takopplett",
+      "beskrivelse": "Hva som kan gjøres",
+      "estimert_ekstra_bra_m2": 0,
+      "innenfor_hoydegrense": true,
+      "soknadstype": "Full byggesøknad",
+      "estimert_kostnad": "300 000 – 800 000 kr",
+      "gjennomforbarhet": "Høy/Middels/Lav"
+    }}
+  ],
+  "bygningstyper_vurdering": {{
+    "bolig": "Vurdering for boligpåbygg",
+    "garasje": "Vurdering for garasjepåbygg (leilighet over garasje etc.)",
+    "uthus": "Vurdering for uthus/anneks"
+  }},
+  "tek17_krav": [
+    {{
+      "krav": "Brannsikkerhet ved ekstra etasje",
+      "paragraf": "TEK17 §11-X",
+      "betydning": "Hva dette betyr"
+    }}
+  ],
+  "dispensasjon_behov": {{
+    "trenger_dispensasjon": false,
+    "fra_hva": "Hva man evt trenger dispensasjon fra",
+    "sannsynlighet": "Høy/Middels/Lav"
+  }},
+  "anbefalinger": ["Anbefaling 1", "Anbefaling 2"],
+  "neste_steg": ["Steg 1: Bestill oppmåling av eksisterende byggehøyde", "Steg 2: ..."]
+}}
+
+Estimer nåværende byggehøyde basert på:
+- Enebolig 1 etasje: ~4-5m gesims, ~6-7m møne
+- Enebolig 1.5 etasje: ~5-6m gesims, ~7-8m møne
+- Enebolig 2 etasjer: ~6-7m gesims, ~8-9m møne
+- Garasje: ~2.5-3m gesims, ~3.5-4m møne"""
+
+        client = anthropic.AsyncAnthropic(api_key=os.environ.get("ANTHROPIC_API_KEY", ""))
+        response = await client.messages.create(
+            model="claude-sonnet-4-6",
+            max_tokens=3000,
+            system=(
+                "Du er en norsk byggesaksekspert. Påbygg handler om HØYDE – ikke BYA/fotavtrykk. "
+                "Vurder alltid gesimshøyde og mønehøyde opp mot plan og PBL §29-4. "
+                "Gi realistiske estimater for byggehøyder. "
+                "Husk at garasjer og uthus også kan bygges på (f.eks. leilighet over garasje). "
+                "Dette er beslutningsstøtte – ikke juridisk rådgivning."
+            ),
+            messages=[{"role": "user", "content": user_prompt}],
+        )
+        text = response.content[0].text.strip()
+        if text.startswith("```"):
+            text = text.split("```", 2)[1]
+            if text.startswith("json"):
+                text = text[4:]
+            text = text.rsplit("```", 1)[0].strip()
+        ai = json.loads(text)
+
+        return {
+            "eiendom": {
+                "knr": knr, "gnr": gnr, "bnr": bnr,
+                "adresse": adresse, "kommunenavn": kommunenavn,
+            },
+            "bygningstype": bygningstype,
+            "eksisterende_bygninger": bygninger,
+            "hoydeberegning": hoydeberegning,
+            **ai,
+            "pbl_referanse": (
+                "PBL §29-4: Der høyde ikke er angitt i reguleringsplan gjelder: "
+                "gesimshøyde inntil 8 m og mønehøyde inntil 9 m."
+            ),
+            "disclaimer": (
+                "Høydeestimatene er basert på typiske verdier og kan avvike fra faktisk byggehøyde. "
+                "Bestill oppmåling for nøyaktige mål. Verifiser høydebestemmelser med kommunen."
+            ),
+        }
+
+    except json.JSONDecodeError as exc:
+        raise HTTPException(status_code=502, detail=f"AI-svar feilet: {exc}")
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail=f"Påbygganalyse feilet: {exc}")
